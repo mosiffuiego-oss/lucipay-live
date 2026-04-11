@@ -222,5 +222,24 @@
             </button>
         </nav>
     </div>
+    <script>
+    // Ye code user ko login karwane mein madad karega
+    function handleLogin() {
+        // Maan lijiye aapka phone input ka id 'phone' hai aur password ka 'pass'
+        const phone = document.getElementById('phone')?.value;
+        const pass = document.getElementById('pass')?.value;
+
+        // Testing ke liye humne ek default user rakha hai
+        // Aap yahan apna koi bhi number/pass dal sakte hain
+        if(phone === '1234567890' && pass === '1234') {
+            alert('Login Successful!');
+            // Login ke baad home page dikhane ke liye
+            // Agar aap Alpine.js use kar rahe hain toh yahan logic badal sakta hai
+            location.reload(); 
+        } else {
+            alert('Wrong details! Try: 1234567890 and 1234');
+        }
+    }
+</script>
 </body>
 </html>
