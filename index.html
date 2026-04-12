@@ -3,104 +3,140 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LuciPay Premium</title>
+    <title>LuciPay - Premium Wallet</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <style>
         [x-cloak] { display: none !important; }
-        .emerald-grad { background: linear-gradient(180deg, #059669 0%, #064e3b 100%); }
-        .input-style { background: #f0fdf4; border: 1px solid #d1fae5; border-radius: 16px; padding: 16px; width: 100%; outline: none; transition: 0.3s; }
-        .input-style:focus { border-color: #10b981; box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1); }
-        @keyframes logo-shrink {
-            0% { transform: scale(1.5); opacity: 0; }
+        .emerald-grad { background: linear-gradient(180deg, #10b981 0%, #064e3b 100%); }
+        .input-box { background: #f9fafb; border: 1.5px solid #e5e7eb; border-radius: 16px; padding: 16px; width: 100%; outline: none; transition: 0.3s; }
+        .input-box:focus { border-color: #10b981; background: #ffffff; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.1); }
+        
+        /* Animation Styles */
+        @keyframes shrink {
+            0% { transform: scale(1.2); opacity: 0; }
             50% { transform: scale(1); opacity: 1; }
-            100% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(0.5); opacity: 0; }
         }
-        .animate-logo { animation: logo-shrink 2.5s forwards; }
+        .splash-anim { animation: shrink 2.5s forwards; }
     </style>
 </head>
-<body x-data="lucipay()" x-init="startApp()" class="bg-white">
+<body x-data="luciApp()" x-init="init()" class="bg-slate-50 font-sans">
 
-    <template x-if="screen === 'splash'">
-        <div class="fixed inset-0 z-50 bg-white flex flex-col items-center justify-center">
-            <h1 class="text-5xl font-black text-emerald-600 italic tracking-tighter animate-logo">LuciPay</h1>
-            <div x-init="setTimeout(() => { showLP = true }, 1500)" x-show="showLP" class="w-24 h-24 bg-emerald-600 rounded-[2rem] flex items-center justify-center text-white text-4xl font-black italic shadow-2xl">LP</div>
-        </div>
-    </template>
+    <div x-show="screen === 'splash'" class="fixed inset-0 z-50 bg-white flex flex-col items-center justify-center">
+        <h1 class="text-6xl font-black text-emerald-600 italic tracking-tighter splash-anim">LuciPay</h1>
+        <div x-show="showLogo" x-transition.duration.500ms class="w-28 h-28 bg-emerald-600 rounded-[2.5rem] flex items-center justify-center text-white text-5xl font-black italic shadow-2xl">LP</div>
+    </div>
 
-    <div x-show="screen !== 'splash'" x-cloak class="min-h-screen p-6 flex flex-col items-center">
+    <div x-show="screen !== 'splash'" x-cloak class="min-h-screen max-w-md mx-auto p-6 flex flex-col items-center">
         
-        <div class="w-14 h-14 bg-emerald-600 rounded-2xl flex items-center justify-center text-white text-xl font-black italic shadow-lg mb-8">LP</div>
+        <div class="w-16 h-16 bg-emerald-600 rounded-2xl flex items-center justify-center text-white text-2xl font-black italic shadow-lg mb-10">LP</div>
 
-        <div x-show="view === 'login'" class="w-full max-w-sm space-y-5">
-            <div class="text-center mb-8">
-                <h2 class="text-3xl font-black text-emerald-900">Welcome</h2>
-                <p class="text-gray-400 text-sm font-medium">Login to your LuciPay account</p>
+        <div x-show="view === 'login'" class="w-full space-y-5">
+            <div class="text-left mb-8">
+                <h2 class="text-3xl font-black text-emerald-900">Welcome Back</h2>
+                <p class="text-gray-500 font-medium">Securely login to your account</p>
             </div>
-            <input type="number" placeholder="Phone Number" class="input-style" x-model="phone">
-            <input type="password" placeholder="Password" class="input-style" x-model="pass">
-            <button @click="login()" class="w-full emerald-grad text-white py-4 rounded-2xl font-bold shadow-lg shadow-emerald-200">LOGIN</button>
-            <div class="flex justify-between px-2">
-                <button @click="view = 'register'" class="text-xs font-bold text-emerald-600 uppercase">Create Account</button>
-                <button @click="view = 'forget'" class="text-xs font-bold text-gray-400 uppercase">Forgot Password?</button>
+            
+            <input type="number" placeholder="Mobile Number" class="input-box" x-model="loginPhone">
+            <input type="password" placeholder="Password" class="input-box" x-model="loginPass">
+            
+            <div class="flex items-center justify-between px-1">
+                <label class="flex items-center space-x-2 cursor-pointer">
+                    <input type="checkbox" x-model="rememberMe" class="w-4 h-4 text-emerald-600 rounded border-gray-300">
+                    <span class="text-sm font-bold text-gray-600">Remember Me</span>
+                </label>
+                <button @click="view = 'forget'" class="text-sm font-bold text-emerald-600 uppercase tracking-tight">Forgot Password?</button>
             </div>
+
+            <button @click="doLogin()" class="w-full emerald-grad text-white py-5 rounded-[20px] font-black shadow-xl active:scale-95 transition-transform">LOG IN</button>
+            
+            <p class="text-center text-sm font-bold text-gray-400">
+                Don't have an account? <span @click="view = 'register'" class="text-emerald-600 cursor-pointer">Register Now</span>
+            </p>
         </div>
 
-        <div x-show="view === 'register'" class="w-full max-w-sm space-y-4">
-            <h2 class="text-2xl font-black text-emerald-900 text-center mb-6">Create Account</h2>
-            <input type="text" placeholder="Full Name" class="input-style">
+        <div x-show="view === 'register'" class="w-full space-y-4">
+            <h2 class="text-3xl font-black text-emerald-900 text-left mb-6">Create Account</h2>
+            
+            <input type="text" placeholder="Full Name" class="input-box">
+            
             <div class="flex gap-2">
-                <span class="bg-emerald-50 p-4 rounded-2xl font-bold text-emerald-700">+91</span>
-                <input type="number" placeholder="Mobile Number" class="input-style">
+                <span class="bg-emerald-100 p-4 rounded-2xl font-black text-emerald-700">+91</span>
+                <input type="number" placeholder="Mobile Number" class="input-box">
             </div>
+
             <div class="flex gap-2">
-                <input type="number" placeholder="4-Digit OTP" class="input-style">
-                <button @click="alert('OTP Sent to your number!')" class="bg-emerald-100 text-emerald-700 px-4 rounded-2xl text-[10px] font-black uppercase">Send</button>
+                <input type="number" placeholder="4-Digit OTP" class="input-box">
+                <button @click="sendOTP()" class="bg-emerald-600 text-white px-6 rounded-2xl text-xs font-black uppercase shadow-md">Send</button>
             </div>
-            <input type="password" placeholder="Set Password" class="input-style">
-            <input type="text" placeholder="Invite Code (e.g. LP786)" class="input-style">
-            <button @click="view = 'login'" class="w-full emerald-grad text-white py-4 rounded-2xl font-bold shadow-lg">REGISTER</button>
-            <p @click="view = 'login'" class="text-center text-xs font-bold text-emerald-600 mt-4">BACK TO LOGIN</p>
+
+            <input type="password" placeholder="Create Password" class="input-box">
+            <input type="text" placeholder="Invite Code (Optional)" class="input-box border-dashed border-emerald-300">
+
+            <button @click="alert('Registration Successful!')" class="w-full emerald-grad text-white py-5 rounded-[20px] font-black shadow-xl mt-4">JOIN LUCIPAY</button>
+            
+            <button @click="view = 'login'" class="w-full text-center text-sm font-bold text-gray-400 uppercase tracking-widest">Back to Login</button>
         </div>
 
-        <div x-show="view === 'dashboard'" class="w-full max-w-sm">
-            <div class="emerald-grad p-8 rounded-[2.5rem] text-white shadow-2xl relative overflow-hidden">
-                <p class="text-emerald-200 text-xs font-bold uppercase tracking-widest">Available Balance</p>
-                <h3 class="text-4xl font-black mt-2">₹0.00</h3>
-                <div class="mt-6 flex gap-2">
-                    <span class="bg-white/20 px-3 py-1 rounded-full text-[10px] font-bold italic">PREMIUM USER</span>
-                </div>
+        <div x-show="view === 'forget'" class="w-full space-y-5">
+            <h2 class="text-3xl font-black text-emerald-900">Reset Password</h2>
+            <p class="text-gray-500">Enter your registered mobile to get OTP.</p>
+            <input type="number" placeholder="Mobile Number" class="input-box">
+            <button @click="alert('OTP Sent!')" class="w-full emerald-grad text-white py-5 rounded-[20px] font-black">SEND RESET LINK</button>
+            <button @click="view = 'login'" class="w-full text-center text-sm font-bold text-emerald-600 uppercase">Cancel</button>
+        </div>
+
+        <div x-show="view === 'dashboard'" class="w-full">
+            <div class="emerald-grad p-10 rounded-[3rem] text-white shadow-2xl relative">
+                <p class="text-emerald-200 text-xs font-black uppercase tracking-widest">Your Balance</p>
+                <h3 class="text-5xl font-black mt-2">₹0.00</h3>
             </div>
-            <div class="mt-8 grid grid-cols-2 gap-4">
-                <div class="bg-gray-50 p-6 rounded-3xl border border-gray-100 text-center">
-                    <p class="text-emerald-600 font-black text-xl mb-1">Deposit</p>
-                    <p class="text-[10px] text-gray-400 font-bold">ADD MONEY</p>
-                </div>
-                <div @click="view = 'login'" class="bg-gray-50 p-6 rounded-3xl border border-gray-100 text-center">
-                    <p class="text-red-500 font-black text-xl mb-1">Logout</p>
-                    <p class="text-[10px] text-gray-400 font-bold">EXIT APP</p>
-                </div>
-            </div>
+            <button @click="view = 'login'" class="mt-10 w-full p-4 bg-white border border-red-100 text-red-500 font-black rounded-2xl">LOGOUT</button>
         </div>
 
     </div>
 
     <script>
-        function lucipay() {
+        function luciApp() {
             return {
                 screen: 'splash',
                 view: 'login',
-                showLP: false,
-                phone: '',
-                pass: '',
-                startApp() {
-                    setTimeout(() => { this.screen = 'main' }, 3000);
+                showLogo: false,
+                loginPhone: '',
+                loginPass: '',
+                rememberMe: false,
+
+                init() {
+                    // Remember Me check
+                    const savedPhone = localStorage.getItem('luci_phone');
+                    if (savedPhone) {
+                        this.loginPhone = savedPhone;
+                        this.rememberMe = true;
+                    }
+
+                    setTimeout(() => { 
+                        this.showLogo = true;
+                        setTimeout(() => { this.screen = 'main' }, 1500);
+                    }, 1800);
                 },
-                login() {
-                    if(this.phone === '1234567890' && this.pass === '1234') {
+
+                sendOTP() {
+                    alert('OTP service will be connected to your Telegram Bot/Firebase.');
+                },
+
+                doLogin() {
+                    // Logic to save data if Remember Me is checked
+                    if (this.rememberMe) {
+                        localStorage.setItem('luci_phone', this.loginPhone);
+                    } else {
+                        localStorage.removeItem('luci_phone');
+                    }
+
+                    if(this.loginPhone === '1234567890' && this.loginPass === '1234') {
                         this.view = 'dashboard';
                     } else {
-                        alert('Try Phone: 1234567890 | Pass: 1234');
+                        alert('Error: Check credentials or Register.');
                     }
                 }
             }
