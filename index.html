@@ -21,130 +21,57 @@
             box-shadow: 0 12px 25px rgba(16, 185, 129, 0.3);
         }
 
-        /* Fixed Navigation Fix */
-        .bottom-nav-fixed {
-            position: fixed;
-            bottom: 0;
+        /* STRICT NAVIGATION FIX */
+        .nav-lock {
+            position: fixed !important;
+            bottom: 0 !important;
             left: 0;
             right: 0;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(15px);
-            border-top: 1px solid rgba(0, 0, 0, 0.08);
-            z-index: 100;
+            background: #ffffff;
+            border-top: 1px solid #eee;
+            z-index: 9999;
             padding-bottom: env(safe-area-inset-bottom);
         }
 
-        /* Prevent content from hiding behind nav */
-        .content-wrapper {
-            padding-bottom: 100px;
+        /* Added padding to prevent content from going under the nav */
+        .dashboard-scroll {
+            padding-bottom: 120px;
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
+            from { opacity: 0; transform: translateY(15px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        .anim-fade { animation: fadeIn 0.5s ease-out forwards; }
+        .anim-fade { animation: fadeIn 0.4s ease-out forwards; }
     </style>
 </head>
-<body x-data="luciApp()" class="bg-gray-50">
+<body x-data="luciApp()" class="bg-gray-50 font-sans">
 
-    <div x-show="step === 'splash'" class="fixed inset-0 z-[1000] bg-white flex items-center justify-center">
+    <div x-show="step === 'splash'" class="fixed inset-0 z-[10000] bg-white flex items-center justify-center">
         <h1 x-show="!showLogo" x-transition.duration.500ms class="text-6xl font-black text-emerald-600 italic tracking-tighter">LuciPay</h1>
-        <div x-show="showLogo" x-transition:enter="transition ease-out duration-700" x-transition:enter-start="scale-0 rotate-180" x-transition:enter-end="scale-100 rotate-0" class="lp-logo-circle">LP</div>
+        <div x-show="showLogo" x-transition:enter="transition duration-700" x-transition:enter-start="scale-0 rotate-180" x-transition:enter-end="scale-100 rotate-0" class="lp-logo-circle">LP</div>
     </div>
 
-    <div x-show="step !== 'splash'" x-cloak class="min-h-screen flex flex-col items-center p-6 content-wrapper">
+    <div x-show="step !== 'splash'" x-cloak class="min-h-screen flex flex-col items-center p-6" :class="view === 'dashboard' ? 'dashboard-scroll' : ''">
         
         <div x-show="view !== 'dashboard'" class="mt-2 mb-10 lp-logo-circle scale-75 anim-fade">LP</div>
 
         <div x-show="view === 'login'" class="w-full max-w-sm space-y-7 anim-fade">
-            <h2 class="text-3xl font-black text-slate-900 text-center tracking-tight">Login LuciPay User</h2>
+            <h2 class="text-3xl font-black text-slate-900 text-center">Login LuciPay User</h2>
             <div class="space-y-4">
                 <input type="number" placeholder="Phone Number" class="w-full bg-white border-2 border-slate-100 rounded-2xl p-5 outline-none focus:border-emerald-500 font-semibold" x-model="loginPhone">
                 <input type="password" placeholder="Password" class="w-full bg-white border-2 border-slate-100 rounded-2xl p-5 outline-none focus:border-emerald-500 font-semibold" x-model="loginPass">
             </div>
-            <button @click="handleLogin()" class="w-full btn-green text-white py-5 rounded-[22px] font-black text-lg shadow-xl uppercase active:scale-95 transition-all">Login</button>
+            <button @click="handleLogin()" class="w-full btn-green text-white py-5 rounded-[22px] font-black text-lg uppercase tracking-widest">Login</button>
             <p class="text-center font-bold text-slate-400">New User? <span @click="view = 'register'" class="text-emerald-600 cursor-pointer underline">Register</span></p>
         </div>
 
         <div x-show="view === 'register'" class="w-full max-w-sm space-y-4 anim-fade">
             <h2 class="text-3xl font-black text-center mb-2">Register</h2>
-            <input type="text" placeholder="Username" class="w-full bg-white border-2 border-slate-100 rounded-2xl p-4 outline-none focus:border-emerald-500 font-semibold">
+            <input type="text" placeholder="Username" class="w-full bg-white border-2 border-slate-100 rounded-2xl p-4 outline-none font-semibold">
             <div class="flex gap-2">
                 <span class="bg-slate-100 flex items-center px-4 rounded-2xl font-bold">+91</span>
-                <input type="number" placeholder="Mobile Number" class="w-full bg-white border-2 border-slate-100 rounded-2xl p-4 outline-none focus:border-emerald-500 font-semibold">
+                <input type="number" placeholder="Mobile Number" class="w-full bg-white border-2 border-slate-100 rounded-2xl p-4 outline-none font-semibold">
             </div>
             <div class="flex gap-2">
-                <input type="number" placeholder="OTP" class="w-full bg-white border-2 border-slate-100 rounded-2xl p-4 outline-none focus:border-emerald-500 font-semibold">
-                <button @click="alert('OTP Sent!')" class="bg-slate-900 text-white px-5 rounded-2xl font-bold text-xs uppercase">Send</button>
-            </div>
-            <input type="password" placeholder="Password" class="w-full bg-white border-2 border-slate-100 rounded-2xl p-4 outline-none focus:border-emerald-500 font-semibold">
-            <input type="text" placeholder="Invite Code" class="w-full bg-white border-2 border-slate-100 rounded-2xl p-4 outline-none border-dashed border-emerald-300 font-semibold">
-            <button @click="view = 'login'" class="w-full btn-green text-white py-5 rounded-[22px] font-black uppercase">Register</button>
-        </div>
-
-        <div x-show="view === 'dashboard'" class="w-full max-w-md anim-fade space-y-6">
-            
-            <div class="flex items-center justify-between px-2">
-                <div class="flex items-center gap-3">
-                    <div class="w-14 h-14 bg-white rounded-full flex items-center justify-center p-1 shadow-md">
-                        <img src="https://img.icons8.com/bubbles/100/female-profile.png" class="w-full h-full">
-                    </div>
-                    <div>
-                        <h4 class="text-xl font-black tracking-tight" x-text="loginPhone"></h4>
-                        <span class="text-[11px] font-bold text-slate-500 bg-white px-3 py-1 rounded-full shadow-sm" x-text="'ID: ' + uid"></span>
-                    </div>
-                </div>
-                <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-sm">
-                    <img src="https://img.icons8.com/fluency-systems-regular/48/null/appointment-reminders.png" class="w-6 h-6"/>
-                </div>
-            </div>
-
-            <div class="bg-slate-900 p-8 rounded-[2.5rem] text-white shadow-2xl relative overflow-hidden">
-                <p class="text-emerald-400 text-xs font-black uppercase tracking-widest">Available Balance</p>
-                <h3 class="text-5xl font-black mt-3 italic">₹0.00</h3>
-                <button class="absolute right-6 top-1/2 -translate-y-1/2 bg-white text-black font-bold px-5 py-2 rounded-full text-[10px] uppercase shadow-lg">Detail</button>
-                <div class="absolute -right-10 -top-10 w-32 h-32 bg-emerald-600 rounded-full blur-[60px] opacity-20"></div>
-            </div>
-
-            <div class="grid grid-cols-2 gap-3">
-                <div class="bg-white p-5 rounded-3xl shadow-sm border border-slate-100 flex items-center gap-3">
-                    <img src="https://img.icons8.com/fluency/48/null/safe-out.png" class="w-8 h-8"/>
-                    <div>
-                        <p class="text-[10px] font-bold text-slate-400 uppercase">Deposit</p>
-                        <p class="text-lg font-black italic text-slate-800">₹0</p>
-                    </div>
-                </div>
-                <div class="bg-white p-5 rounded-3xl shadow-sm border border-slate-100 flex items-center gap-3">
-                    <img src="https://img.icons8.com/fluency/48/null/safe-in.png" class="w-8 h-8"/>
-                    <div>
-                        <p class="text-[10px] font-bold text-slate-400 uppercase">Withdraw</p>
-                        <p class="text-lg font-black italic text-slate-800">₹0</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-4 gap-4 px-1">
-                <template x-for="item in [{i: 'https://img.icons8.com/fluency/96/atm.png', n: 'Deposit'}, {i: 'https://img.icons8.com/fluency/96/task.png', n: 'Task'}, {i: 'https://img.icons8.com/fluency/96/conference-call.png', n: 'Team'}, {i: 'https://img.icons8.com/fluency/96/order-history.png', n: 'Order'}]">
-                    <div class="text-center space-y-2">
-                        <div class="bg-white aspect-square rounded-2xl shadow-sm flex items-center justify-center p-3">
-                            <img :src="item.i" class="w-full">
-                        </div>
-                        <p class="text-[10px] font-black text-slate-500 uppercase tracking-tighter" x-text="item.n"></p>
-                    </div>
-                </template>
-            </div>
-
-            <div class="bg-white p-6 rounded-[2rem] shadow-md border border-slate-50 text-center space-y-4">
-                <div class="flex justify-between items-center mb-2">
-                    <span class="font-black text-slate-800 tracking-tight">Transactions</span>
-                    <span class="text-emerald-600 text-[10px] font-bold underline uppercase">See All</span>
-                </div>
-                <img src="https://img.icons8.com/fluency/96/null/box.png" class="w-16 h-16 mx-auto opacity-20">
-                <p class="text-sm font-black text-slate-400 italic">No top-up orders yet</p>
-                <button class="bg-emerald-600 text-white font-black px-8 py-3 rounded-full text-xs uppercase shadow-lg shadow-emerald-100">Top up now</button>
-            </div>
-        </div>
-
-        <nav x-show="view === 'dashboard'" class="bottom-nav-fixed flex justify-around items-center p-3 shadow-[0_-10px_30px_rgba(0,0,0,0.05)]">
-            <template x-for="
+                <input type="number" placeholder="OTP" class="w-full bg-white border-2 border
