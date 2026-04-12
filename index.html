@@ -9,101 +9,128 @@
     <style>
         [x-cloak] { display: none !important; }
         
-        /* Premium Black Circle & Yellow LP */
+        /* Premium Logo: Black circle, Gold/Yellow LP */
         .lp-logo {
             background: #000000;
             color: #FFD700;
-            width: 85px;
-            height: 85px;
+            width: 90px;
+            height: 90px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: 900;
             font-style: italic;
             border-radius: 50%;
-            box-shadow: 0 15px 30px rgba(0,0,0,0.25);
-            font-size: 2.2rem;
-            border: 3px solid #FFD700;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            font-size: 2.4rem;
+            border: 4px solid #FFD700;
             margin: 0 auto;
         }
 
         .btn-premium {
             background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-            box-shadow: 0 12px 24px rgba(16, 185, 129, 0.3);
-            border: none;
-            transition: all 0.3s ease;
+            box-shadow: 0 15px 30px rgba(16, 185, 129, 0.3);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
-        .btn-premium:active { transform: scale(0.96); }
+        .btn-premium:active { transform: scale(0.94); }
 
-        .input-box {
+        .input-style {
             background: #f8fafc;
-            border: 2px solid #e2e8f0;
-            border-radius: 20px;
+            border: 2px solid #f1f5f9;
+            border-radius: 22px;
             padding: 18px 24px;
             width: 100%;
             transition: 0.3s;
             font-weight: 600;
         }
-        .input-box:focus {
+        .input-style:focus {
             border-color: #10b981;
             background: #ffffff;
             outline: none;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
         }
 
         /* Animations */
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
+        @keyframes springUp {
+            from { opacity: 0; transform: translateY(50px) scale(0.9); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
         }
-        .anim-up { animation: slideUp 0.6s ease-out forwards; }
+        .animate-spring { animation: springUp 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
     </style>
 </head>
-<body x-data="luciApp()" class="bg-white overflow-x-hidden font-sans">
+<body x-data="luciApp()" class="bg-white font-sans overflow-x-hidden">
 
     <div x-show="step === 'splash'" class="fixed inset-0 z-50 bg-white flex items-center justify-center">
-        <h1 x-show="!showLogo" x-transition.opacity.duration.400ms class="text-6xl font-black text-emerald-600 italic tracking-tighter">LuciPay</h1>
-        <div x-show="showLogo" x-transition:enter="transition ease-out duration-700" x-transition:enter-start="scale-0 rotate-45" x-transition:enter-end="scale-100 rotate-0" class="lp-logo">LP</div>
+        <h1 x-show="!showLogo" x-transition.opacity.duration.500ms class="text-6xl font-black text-emerald-600 italic tracking-tighter">LuciPay</h1>
+        <div x-show="showLogo" x-transition:enter="transition ease-out duration-800" x-transition:enter-start="scale-0 rotate-90 blur-xl" x-transition:enter-end="scale-100 rotate-0 blur-0" class="lp-logo">LP</div>
     </div>
 
     <div x-show="step !== 'splash'" x-cloak class="min-h-screen flex flex-col items-center p-8">
         
-        <div class="mt-2 mb-10 lp-logo scale-90 anim-up">LP</div>
+        <div class="mt-4 mb-10 lp-logo scale-90 animate-spring">LP</div>
 
-        <div x-show="view === 'login'" class="w-full max-w-sm space-y-6 anim-up">
+        <div x-show="view === 'login'" class="w-full max-w-sm space-y-6 animate-spring" style="animation-delay: 0.1s">
             <div class="text-center">
-                <h2 class="text-3xl font-black text-slate-900">Login LuciPay User</h2>
-                <p class="text-slate-400 font-bold text-sm mt-1">Access your secure wallet</p>
+                <h2 class="text-3xl font-black text-slate-900 tracking-tight">Login LuciPay User</h2>
+                <p class="text-slate-400 font-bold text-sm mt-1">Ready to manage your wealth?</p>
             </div>
 
             <div class="space-y-4">
-                <input type="number" placeholder="Phone Number" class="input-box" x-model="phone">
-                <input type="password" placeholder="Password" class="input-box" x-model="pass">
+                <input type="number" placeholder="Phone Number" class="input-style" x-model="form.phone">
+                <input type="password" placeholder="Password" class="input-style" x-model="form.pass">
             </div>
 
             <div class="flex items-center justify-between px-2">
-                <label class="flex items-center space-x-2">
-                    <input type="checkbox" x-model="remember" class="w-5 h-5 text-emerald-600 rounded-lg">
-                    <span class="text-sm font-bold text-slate-500">Remember Me</span>
+                <label class="flex items-center space-x-2 cursor-pointer">
+                    <input type="checkbox" x-model="form.remember" class="w-5 h-5 text-emerald-600 rounded-lg">
+                    <span class="text-sm font-bold text-slate-500">Keep me logged in</span>
                 </label>
-                <button class="text-sm font-black text-emerald-600">Forgot?</button>
+                <button @click="view = 'forget'" class="text-sm font-black text-emerald-600 underline">Forgot?</button>
             </div>
 
-            <button @click="handleLogin()" class="w-full btn-premium text-white py-5 rounded-[24px] font-black text-lg tracking-widest uppercase">
+            <button @click="handleLogin()" class="w-full btn-premium text-white py-5 rounded-[26px] font-black text-lg tracking-widest uppercase">
                 Secure Login
             </button>
 
             <p class="text-center font-bold text-slate-400">
-                New User? <span @click="view = 'register'" class="text-emerald-600 cursor-pointer underline">Register</span>
+                New User? <span @click="view = 'register'" class="text-emerald-600 cursor-pointer underline">Create Account</span>
             </p>
         </div>
 
-        <div x-show="view === 'dashboard'" class="w-full max-w-sm anim-up">
-            <div class="bg-slate-900 p-10 rounded-[3rem] text-white shadow-2xl">
-                <p class="text-emerald-400 text-xs font-black uppercase tracking-widest">Main Wallet</p>
+        <div x-show="view === 'register'" class="w-full max-w-sm space-y-5 animate-spring">
+            <div class="text-center">
+                <h2 class="text-3xl font-black text-slate-900">New Account</h2>
+                <p class="text-slate-400 font-bold text-sm mt-1">Join the LuciPay network</p>
+            </div>
+
+            <input type="text" placeholder="Full Name" class="input-style" x-model="reg.name">
+            
+            <div class="flex gap-3">
+                <span class="bg-slate-100 flex items-center px-4 rounded-2xl font-bold text-slate-500">+91</span>
+                <input type="number" placeholder="Phone" class="input-style" x-model="reg.phone">
+            </div>
+
+            <div class="flex gap-2">
+                <input type="number" placeholder="OTP" class="input-style">
+                <button @click="alert('OTP Sent!')" class="bg-slate-900 text-white px-6 rounded-[22px] font-bold text-xs uppercase">Send</button>
+            </div>
+
+            <input type="password" placeholder="Set Password" class="input-style" x-model="reg.pass">
+            <input type="text" placeholder="Invite Code (Optional)" class="input-style border-dashed border-emerald-200">
+
+            <button @click="handleRegister()" class="w-full btn-premium text-white py-5 rounded-[26px] font-black uppercase">Complete Registration</button>
+            
+            <button @click="view = 'login'" class="w-full text-center font-bold text-slate-400 uppercase text-xs">Back to Login</button>
+        </div>
+
+        <div x-show="view === 'dashboard'" class="w-full max-w-sm animate-spring">
+            <div class="bg-slate-900 p-10 rounded-[3.5rem] text-white shadow-2xl border-b-4 border-emerald-500">
+                <p class="text-emerald-400 text-xs font-black uppercase tracking-widest">Available Balance</p>
                 <h3 class="text-5xl font-black mt-3 italic">₹0.00</h3>
             </div>
-            <button @click="view = 'login'" class="mt-12 w-full p-5 bg-red-50 text-red-600 font-black rounded-[24px] border-2 border-red-100">LOGOUT</button>
+            <button @click="view = 'login'" class="mt-12 w-full p-5 bg-red-50 text-red-600 font-black rounded-[26px] border-2 border-red-100">LOGOUT</button>
         </div>
+
     </div>
 
     <script>
@@ -112,29 +139,36 @@
                 step: 'splash',
                 view: 'login',
                 showLogo: false,
-                phone: '',
-                pass: '',
-                remember: false,
+                form: { phone: '', pass: '', remember: false },
+                reg: { name: '', phone: '', pass: '' },
 
                 init() {
-                    // Animation Timer
+                    // Smooth sequence
                     setTimeout(() => {
                         this.showLogo = true;
                         setTimeout(() => { this.step = 'app' }, 1200);
-                    }, 1500);
+                    }, 1400);
 
-                    // Auto-load remember data
-                    const saved = localStorage.getItem('l_p');
-                    if(saved) { this.phone = saved; this.remember = true; }
+                    const saved = localStorage.getItem('luci_phone');
+                    if(saved) { this.form.phone = saved; this.form.remember = true; }
                 },
 
                 handleLogin() {
-                    if(this.phone.length >= 10 && this.pass.length >= 4) {
-                        if(this.remember) localStorage.setItem('l_p', this.phone);
-                        else localStorage.removeItem('l_p');
+                    if(this.form.phone.length >= 10 && this.form.pass.length >= 4) {
+                        if(this.form.remember) localStorage.setItem('luci_phone', this.form.phone);
                         this.view = 'dashboard';
                     } else {
-                        alert("Please enter 10-digit Phone & 4-digit Password.");
+                        alert("Try again! Need 10-digit phone and 4-digit password.");
+                    }
+                },
+
+                handleRegister() {
+                    if(this.reg.phone.length >= 10 && this.reg.pass.length >= 4) {
+                        alert("Registration Successful! Now please login.");
+                        this.form.phone = this.reg.phone; // Auto-fill login
+                        this.view = 'login';
+                    } else {
+                        alert("Fill all details correctly.");
                     }
                 }
             }
