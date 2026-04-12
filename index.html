@@ -8,159 +8,81 @@
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <style>
         [x-cloak] { display: none !important; }
-        body { background-color: #ffffff; overflow-x: hidden; }
         
-        /* Glassmorphism & High-End UI */
-        .lp-logo-top {
+        /* Premium Logo: Black circle, Yellow LP */
+        .lp-logo-circle {
             background: #000000;
-            color: #FFD700; /* Yellow LP */
-            width: 80px;
-            height: 80px;
+            color: #FFD700;
+            width: 85px;
+            height: 85px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: 900;
             font-style: italic;
-            border-radius: 22px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
-            font-size: 2rem;
+            border-radius: 50%;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            font-size: 2.2rem;
+            border: 3px solid #FFD700;
         }
 
-        .btn-premium {
+        .btn-action {
             background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-            box-shadow: 0 10px 20px rgba(16, 185, 129, 0.3);
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 12px 24px rgba(16, 185, 129, 0.3);
+            transition: all 0.3s ease;
         }
-        .btn-premium:active { transform: scale(0.92); box-shadow: 0 5px 10px rgba(16, 185, 129, 0.2); }
+        .btn-action:active { transform: scale(0.95); }
 
-        .input-field {
-            background: #f3f4f6;
-            border: 2px solid transparent;
-            border-radius: 20px;
-            padding: 18px 24px;
-            width: 100%;
-            transition: 0.3s;
-            font-weight: 600;
-        }
-        .input-field:focus {
-            border-color: #10b981;
-            background: #fff;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
-            outline: none;
-        }
-
-        /* Animations */
-        @keyframes slideInUp {
-            from { opacity: 0; transform: translateY(40px); }
+        /* Animation Logic */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        .animate-up { animation: slideInUp 0.7s cubic-bezier(0.23, 1, 0.32, 1) forwards; }
+        .animate-content { animation: fadeInUp 0.8s ease-out forwards; }
     </style>
 </head>
-<body x-data="luciApp()">
+<body x-data="luciApp()" class="bg-slate-50 overflow-hidden">
 
     <div x-show="step === 'splash'" class="fixed inset-0 z-50 bg-white flex items-center justify-center">
-        <h1 x-show="!logoTransition" x-transition.opacity.duration.500ms class="text-5xl font-black text-emerald-600 italic tracking-tighter">LuciPay</h1>
-        <div x-show="logoTransition" x-transition:enter="transition ease-out duration-700" x-transition:enter-start="scale-0 rotate-180" x-transition:enter-end="scale-100 rotate-0" class="lp-logo-top">LP</div>
+        <h1 x-show="!showLP" x-transition.opacity.duration.500ms class="text-6xl font-black text-emerald-600 italic tracking-tighter">LuciPay</h1>
+        <div x-show="showLP" x-transition:enter="transition ease-out duration-700" x-transition:enter-start="scale-0" x-transition:enter-end="scale-100" class="lp-logo-circle">LP</div>
     </div>
 
     <div x-show="step !== 'splash'" x-cloak class="min-h-screen flex flex-col items-center p-8">
         
-        <div class="mt-4 mb-10 lp-logo-top animate-up">LP</div>
+        <div class="mt-2 mb-12 lp-logo-circle scale-90">LP</div>
 
-        <div x-show="view === 'login'" class="w-full max-w-sm space-y-6">
-            <div class="text-center animate-up" style="animation-delay: 0.1s">
-                <h2 class="text-3xl font-black text-slate-900">Login LuciPay User</h2>
-                <p class="text-slate-400 font-bold text-sm mt-1">Experience the future of payments</p>
+        <div x-show="view === 'login'" class="w-full max-w-sm space-y-7 animate-content">
+            <div class="text-center">
+                <h2 class="text-3xl font-black text-slate-900 tracking-tight">Login LuciPay User</h2>
+                <p class="text-slate-400 font-bold text-sm mt-2">Enter your credentials to access wallet</p>
             </div>
 
-            <div class="space-y-4 animate-up" style="animation-delay: 0.2s">
-                <input type="number" placeholder="Phone Number" class="input-field" x-model="form.phone">
-                <input type="password" placeholder="Password" class="input-field" x-model="form.pass">
+            <div class="space-y-4">
+                <input type="number" placeholder="Phone Number" class="w-full bg-white border-2 border-slate-100 rounded-2xl p-5 outline-none focus:border-emerald-500 transition-all font-semibold" x-model="form.phone">
+                <input type="password" placeholder="Password" class="w-full bg-white border-2 border-slate-100 rounded-2xl p-5 outline-none focus:border-emerald-500 transition-all font-semibold" x-model="form.pass">
             </div>
 
-            <div class="flex items-center justify-between px-2 animate-up" style="animation-delay: 0.3s">
-                <label class="flex items-center space-x-2 cursor-pointer">
-                    <input type="checkbox" x-model="form.remember" class="w-5 h-5 text-emerald-600 rounded-lg border-gray-300 focus:ring-emerald-500">
-                    <span class="text-sm font-bold text-slate-600">Remember Me</span>
+            <div class="flex items-center justify-between px-2">
+                <label class="flex items-center space-x-2">
+                    <input type="checkbox" x-model="form.remember" class="w-5 h-5 text-emerald-600 rounded">
+                    <span class="text-sm font-bold text-slate-500">Remember Me</span>
                 </label>
-                <button @click="view = 'forget'" class="text-sm font-black text-emerald-600">Forgot?</button>
+                <button class="text-sm font-black text-emerald-600">Forgot Password?</button>
             </div>
 
-            <div class="animate-up" style="animation-delay: 0.4s">
-                <button @click="handleLogin()" class="w-full btn-premium text-white py-5 rounded-[24px] font-black text-lg tracking-wide uppercase">
-                    Secure Login
-                </button>
-            </div>
+            <button @click="login()" class="w-full btn-action text-white py-5 rounded-[22px] font-black text-lg shadow-xl uppercase tracking-widest">
+                Login Now
+            </button>
 
-            <p class="text-center font-bold text-slate-400 animate-up" style="animation-delay: 0.5s">
-                Don't have an account? <span @click="view = 'register'" class="text-emerald-600 cursor-pointer underline">Register</span>
+            <p class="text-center font-bold text-slate-400">
+                New User? <span @click="view = 'register'" class="text-emerald-600 cursor-pointer underline">Create Account</span>
             </p>
         </div>
 
-        <div x-show="view === 'register'" class="w-full max-w-sm space-y-4 animate-up">
-            <h2 class="text-3xl font-black text-slate-900 text-center">New Account</h2>
-            <input type="text" placeholder="Full Name" class="input-field">
-            <div class="flex gap-3">
-                <span class="bg-slate-100 flex items-center px-4 rounded-2xl font-bold text-slate-600">+91</span>
-                <input type="number" placeholder="Mobile Number" class="input-field">
+        <div x-show="view === 'dashboard'" class="w-full max-w-sm animate-content">
+            <div class="bg-slate-900 p-10 rounded-[3rem] text-white shadow-2xl">
+                <p class="text-emerald-400 text-xs font-black uppercase tracking-widest">Net Balance</p>
+                <h3 class="text-5xl font-black mt-3 italic">₹0.00</h3>
             </div>
-            <div class="flex gap-2">
-                <input type="number" placeholder="4-Digit OTP" class="input-field">
-                <button @click="alert('OTP Sent!')" class="bg-slate-900 text-white px-6 rounded-2xl font-bold text-xs uppercase">Send</button>
-            </div>
-            <input type="password" placeholder="Password" class="input-field">
-            <input type="text" placeholder="Invite Code" class="input-field border-dashed border-emerald-200">
-            <button @click="view = 'login'" class="w-full btn-premium text-white py-5 rounded-[24px] font-black uppercase">Create & Login</button>
-            <button @click="view = 'login'" class="w-full text-center font-bold text-slate-400">Back</button>
-        </div>
-
-        <div x-show="view === 'dashboard'" class="w-full max-w-sm animate-up">
-            <div class="bg-slate-900 p-10 rounded-[3rem] text-white shadow-2xl relative overflow-hidden">
-                <div class="relative z-10">
-                    <p class="text-emerald-400 text-xs font-black uppercase tracking-widest">Available Funds</p>
-                    <h3 class="text-5xl font-black mt-3">₹500.00</h3>
-                </div>
-                <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-emerald-600 rounded-full blur-3xl opacity-20"></div>
-            </div>
-            <button @click="view = 'login'" class="mt-10 w-full p-5 bg-red-50 text-red-600 font-black rounded-[24px] border-2 border-red-100">LOGOUT</button>
-        </div>
-
-    </div>
-
-    <script>
-        function luciApp() {
-            return {
-                step: 'splash',
-                view: 'login',
-                logoTransition: false,
-                form: { phone: '', pass: '', remember: false },
-
-                init() {
-                    // Start animation sequence
-                    setTimeout(() => {
-                        this.logoTransition = true;
-                        setTimeout(() => { this.step = 'app' }, 1200);
-                    }, 1500);
-
-                    // Load remember data
-                    const saved = localStorage.getItem('user_phone');
-                    if(saved) { this.form.phone = saved; this.form.remember = true; }
-                },
-
-                handleLogin() {
-                    // AI-Fixed Login Logic
-                    if(this.form.phone.length >= 10 && this.form.pass.length >= 4) {
-                        if(this.form.remember) localStorage.setItem('user_phone', this.form.phone);
-                        else localStorage.removeItem('user_phone');
-                        
-                        this.view = 'dashboard';
-                    } else {
-                        alert("Invalid Details! Phone: 10 digits, Pass: 4 digits.");
-                    }
-                }
-            }
-        }
-    </script>
-</body>
-</html>
+            <button @click="view = 'login'" class="mt-12 w-full p-
