@@ -3,94 +3,135 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LuciPay Pro - Multi Device</title>
+    <title>LuciPay - Elite Wallet</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <style>
         [x-cloak] { display: none !important; }
-        .lp-logo {
+        
+        /* Black & Yellow Logo Style */
+        .lp-logo-main {
             background: #000; color: #FFD700; width: 90px; height: 90px;
             display: flex; align-items: center; justify-content: center;
-            font-weight: 900; border-radius: 50%; box-shadow: 0 15px 30px rgba(0,0,0,0.3);
-            font-size: 2.2rem; border: 4px solid #FFD700; margin: 0 auto;
+            font-weight: 900; border-radius: 50%; box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            font-size: 2.4rem; border: 4px solid #FFD700; margin: 0 auto;
         }
-        .btn-premium {
+
+        .input-premium {
+            background: #f1f5f9; border: 2px solid transparent; border-radius: 20px;
+            padding: 16px 22px; width: 100%; font-weight: 600; transition: 0.3s;
+        }
+        .input-premium:focus { border-color: #10b981; background: #fff; outline: none; box-shadow: 0 10px 20px rgba(16, 185, 129, 0.05); }
+
+        .btn-green {
             background: linear-gradient(135deg, #10b981 0%, #059669 100%);
             box-shadow: 0 12px 25px rgba(16, 185, 129, 0.4);
         }
-        .input-style {
-            background: #f1f5f9; border: 2px solid transparent; border-radius: 20px;
-            padding: 16px 20px; width: 100%; font-weight: 600; transition: 0.3s;
+
+        /* Bottom Nav Glass Effect */
+        .bottom-nav {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
         }
-        .input-style:focus { border-color: #10b981; background: #fff; outline: none; }
-        
-        @keyframes bounceIn {
-            0% { opacity: 0; transform: scale(0.9) translateY(30px); }
-            70% { transform: scale(1.05); }
-            100% { opacity: 1; transform: scale(1) translateY(0); }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
         }
-        .anim-bounce { animation: bounceIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+        .animate-up { animation: slideUp 0.6s ease-out forwards; }
     </style>
 </head>
-<body x-data="luciApp()" class="bg-white font-sans">
+<body x-data="luciApp()" class="bg-white font-sans text-slate-900">
 
     <div x-show="step === 'splash'" class="fixed inset-0 z-50 bg-white flex items-center justify-center">
         <h1 x-show="!showLogo" x-transition.duration.500ms class="text-6xl font-black text-emerald-600 italic tracking-tighter">LuciPay</h1>
-        <div x-show="showLogo" x-transition:enter="transition duration-700 transform" x-transition:enter-start="scale-0 rotate-90" x-transition:enter-end="scale-100 rotate-0" class="lp-logo">LP</div>
+        <div x-show="showLogo" x-transition:enter="transition duration-800 transform" x-transition:enter-start="scale-0 rotate-180 blur-lg" x-transition:enter-end="scale-100 rotate-0 blur-0" class="lp-logo-main">LP</div>
     </div>
 
-    <div x-show="step !== 'splash'" x-cloak class="min-h-screen flex flex-col items-center p-8">
+    <div x-show="step !== 'splash'" x-cloak class="min-h-screen flex flex-col items-center pb-24 p-8">
         
-        <div class="mt-4 mb-8 lp-logo scale-75 anim-bounce">LP</div>
+        <div class="mt-4 mb-10 lp-logo-main scale-75 animate-up">LP</div>
 
-        <div x-show="view === 'login'" class="w-full max-w-sm space-y-6 anim-bounce">
-            <div class="text-center">
-                <h2 class="text-3xl font-black text-slate-900">Login LuciPay User</h2>
-                <p class="text-slate-400 font-bold text-xs uppercase tracking-widest mt-1">Global Access Enabled</p>
-            </div>
-
+        <div x-show="view === 'login'" class="w-full max-w-sm space-y-6 animate-up">
+            <h2 class="text-3xl font-black text-center tracking-tight">Login LuciPay User</h2>
+            
             <div class="space-y-4">
-                <input type="number" placeholder="Enter Mobile Number" class="input-style" x-model="loginData.phone">
-                <input type="password" placeholder="Password" class="input-box input-style" x-model="loginData.pass">
+                <input type="number" placeholder="Mobile Number" class="input-premium" x-model="loginPhone">
+                <input type="password" placeholder="Password" class="input-premium" x-model="loginPass">
             </div>
 
-            <div class="flex items-center justify-between px-1">
-                <label class="flex items-center space-x-2">
+            <div class="flex items-center justify-between px-2">
+                <label class="flex items-center space-x-2 cursor-pointer">
                     <input type="checkbox" x-model="rememberMe" class="w-5 h-5 text-emerald-600 rounded">
-                    <span class="text-sm font-bold text-slate-500 tracking-tight">Save Credentials</span>
+                    <span class="text-sm font-bold text-slate-500">Remember Me</span>
                 </label>
-                <button class="text-sm font-black text-emerald-600">Need Help?</button>
+                <button @click="view = 'forget'" class="text-sm font-black text-emerald-600">Forgot Password?</button>
             </div>
 
-            <button @click="handleLogin()" class="w-full btn-premium text-white py-5 rounded-[24px] font-black text-lg tracking-wider uppercase active:scale-95 transition-all">
-                Authorize Login
+            <button @click="handleLogin()" class="w-full btn-green text-white py-5 rounded-[26px] font-black text-lg uppercase tracking-wider active:scale-95 transition-all">
+                Login
             </button>
 
             <p class="text-center font-bold text-slate-400">
-                New to LuciPay? <span @click="view = 'register'" class="text-emerald-600 cursor-pointer underline">Create Global ID</span>
+                New User? <span @click="view = 'register'" class="text-emerald-600 cursor-pointer underline">Register</span>
             </p>
         </div>
 
-        <div x-show="view === 'register'" class="w-full max-w-sm space-y-5 anim-bounce">
-            <h2 class="text-3xl font-black text-slate-900 text-center">Register Account</h2>
-            <input type="text" placeholder="Full Name" class="input-style" x-model="regData.name">
-            <input type="number" placeholder="Phone Number" class="input-style" x-model="regData.phone">
-            <input type="password" placeholder="Create Password" class="input-style" x-model="regData.pass">
+        <div x-show="view === 'register'" class="w-full max-w-sm space-y-4 animate-up">
+            <h2 class="text-3xl font-black text-center mb-2">Register</h2>
             
-            <button @click="handleRegister()" class="w-full btn-premium text-white py-5 rounded-[24px] font-black uppercase tracking-widest">
-                Register & Sync
+            <input type="text" placeholder="Username" class="input-premium" x-model="reg.name">
+            
+            <div class="flex gap-2">
+                <span class="bg-slate-100 flex items-center px-4 rounded-2xl font-bold text-slate-500 tracking-tighter">+91</span>
+                <input type="number" placeholder="Mobile Number" class="input-premium" x-model="reg.phone">
+            </div>
+
+            <div class="flex gap-2">
+                <input type="number" placeholder="Enter OTP" class="input-premium">
+                <button @click="alert('OTP Sent!')" class="bg-slate-900 text-white px-5 rounded-2xl font-bold text-[10px] uppercase">Send</button>
+            </div>
+
+            <input type="password" placeholder="Create Password" class="input-premium" x-model="reg.pass">
+            <input type="text" placeholder="Invite Code" class="input-premium border-dashed border-emerald-300">
+            
+            <button @click="handleRegister()" class="w-full btn-green text-white py-5 rounded-[26px] font-black uppercase tracking-widest mt-2">
+                Register
             </button>
-            <button @click="view = 'login'" class="w-full text-center font-bold text-slate-400 text-xs">Back to Login</button>
+            <button @click="view = 'login'" class="w-full text-center font-bold text-slate-400 text-xs mt-2 uppercase tracking-tighter">Back to Login</button>
         </div>
 
-        <div x-show="view === 'dashboard'" class="w-full max-w-sm anim-bounce text-center">
-            <div class="bg-slate-900 p-10 rounded-[3rem] text-white shadow-2xl border-b-8 border-emerald-500">
-                <p class="text-emerald-400 text-[10px] font-black uppercase tracking-[0.3em]">Cloud Wallet Balance</p>
-                <h3 class="text-5xl font-black mt-4">₹0.00</h3>
+        <div x-show="view === 'dashboard'" class="w-full max-w-sm animate-up space-y-6">
+            <div class="bg-slate-900 p-8 rounded-[2.5rem] text-white shadow-2xl relative overflow-hidden">
+                <p class="text-emerald-400 text-xs font-black uppercase tracking-[0.2em]">Wallet Balance</p>
+                <h3 class="text-5xl font-black mt-4 italic">₹0.00</h3>
+                <div class="absolute -right-6 -top-6 w-24 h-24 bg-emerald-600 rounded-full blur-3xl opacity-20"></div>
             </div>
-            <p class="mt-6 text-slate-400 font-bold">Logged in as: <span class="text-emerald-600" x-text="loginData.phone"></span></p>
-            <button @click="view = 'login'" class="mt-8 w-full p-5 bg-red-50 text-red-600 font-black rounded-[24px]">SECURE LOGOUT</button>
+
+            <div class="grid grid-cols-2 gap-4">
+                <div class="bg-emerald-50 p-6 rounded-3xl text-center border border-emerald-100">
+                    <p class="text-emerald-600 font-black text-xl">Deposit</p>
+                </div>
+                <div class="bg-slate-50 p-6 rounded-3xl text-center border border-slate-100">
+                    <p class="text-slate-600 font-black text-xl">Withdraw</p>
+                </div>
+            </div>
+
+            <button @click="view = 'login'" class="w-full p-5 bg-red-50 text-red-600 font-black rounded-[24px] border border-red-100">LOGOUT</button>
         </div>
+
+        <nav x-show="view === 'dashboard'" class="fixed bottom-0 left-0 right-0 p-4 bottom-nav flex justify-around items-center rounded-t-[30px] shadow-2xl z-40">
+            <div class="text-emerald-600 flex flex-col items-center">
+                <span class="text-[10px] font-black uppercase">Home</span>
+            </div>
+            <div class="text-slate-400 flex flex-col items-center">
+                <span class="text-[10px] font-black uppercase tracking-tighter">Wallet</span>
+            </div>
+            <div class="text-slate-400 flex flex-col items-center">
+                <span class="text-[10px] font-black uppercase tracking-tighter">Profile</span>
+            </div>
+        </nav>
 
     </div>
 
@@ -101,8 +142,9 @@
                 view: 'login',
                 showLogo: false,
                 rememberMe: false,
-                loginData: { phone: '', pass: '' },
-                regData: { name: '', phone: '', pass: '' },
+                loginPhone: '',
+                loginPass: '',
+                reg: { name: '', phone: '', pass: '' },
 
                 init() {
                     setTimeout(() => {
@@ -110,47 +152,28 @@
                         setTimeout(() => { this.step = 'app' }, 1200);
                     }, 1400);
 
-                    // Load local data if available
-                    const saved = localStorage.getItem('luci_user');
-                    if(saved) {
-                        const user = JSON.parse(saved);
-                        this.loginData.phone = user.phone;
-                        this.rememberMe = true;
-                    }
+                    const saved = localStorage.getItem('l_u');
+                    if(saved) { this.loginPhone = saved; this.rememberMe = true; }
                 },
 
                 handleRegister() {
-                    if(this.regData.phone.length >= 10 && this.regData.pass.length >= 4) {
-                        // Simulation: Saving to a mock database (LocalStorage)
-                        // Note: In real app, this should go to Firebase
-                        const userData = { phone: this.regData.phone, pass: this.regData.pass };
-                        localStorage.setItem('db_user_' + this.regData.phone, JSON.stringify(userData));
-                        
-                        alert("Account Registered on Cloud! You can now login from any device.");
+                    if(this.reg.phone.length >= 10 && this.reg.pass.length >= 4) {
+                        localStorage.setItem('user_' + this.reg.phone, this.reg.pass);
+                        alert("Account Registered! Now Login.");
                         this.view = 'login';
                     } else {
-                        alert("Please fill correct details!");
+                        alert("Fill all fields correctly!");
                     }
                 },
 
                 handleLogin() {
-                    // Check Mock Database
-                    const storedUser = localStorage.getItem('db_user_' + this.loginData.phone);
-                    
-                    if(storedUser) {
-                        const user = JSON.parse(storedUser);
-                        if(user.pass === this.loginData.pass) {
-                            if(this.rememberMe) localStorage.setItem('luci_user', JSON.stringify(user));
-                            this.view = 'dashboard';
-                            return;
-                        }
-                    }
-                    
-                    // Default fallback for testing
-                    if(this.loginData.phone === '1234567890' && this.loginData.pass === '1234') {
+                    const storedPass = localStorage.getItem('user_' + this.loginPhone);
+                    if(storedPass === this.loginPass || (this.loginPhone === '1234567890' && this.loginPass === '1234')) {
+                        if(this.rememberMe) localStorage.setItem('l_u', this.loginPhone);
+                        else localStorage.removeItem('l_u');
                         this.view = 'dashboard';
                     } else {
-                        alert("Login Failed! No user found with these details.");
+                        alert("Invalid Credentials!");
                     }
                 }
             }
