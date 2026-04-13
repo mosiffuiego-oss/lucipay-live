@@ -208,7 +208,9 @@
             }
         }
 
-       <script type="module">
+       <div id="recaptcha-container"></div>
+
+    <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, RecaptchaVerifier, signInWithPhoneNumber } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
         import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
@@ -231,17 +233,21 @@
         // OTP Bhejne ka Function
         window.sendOTP = async function() {
             const phoneInput = document.querySelector('#register-screen input[type="tel"]').value;
-            const phone = "+91" + phoneInput;
+            if(!phoneInput || phoneInput.length < 10) return alert("Pura number dalein");
             
-            if(phoneInput.length < 10) return alert("Pura number dalein");
+            const phone = "+91" + phoneInput;
 
-            window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', { 'size': 'invisible' });
+            // Recaptcha reset if already exists
+            if (!window.recaptchaVerifier) {
+                window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', { 'size': 'invisible' });
+            }
 
             try {
                 const confirmationResult = await signInWithPhoneNumber(auth, phone, window.recaptchaVerifier);
                 window.confirmationResult = confirmationResult;
-                alert("OTP Bhej diya gaya hai!");
+                alert("OTP send successfully!");
             } catch (error) {
+                console.error(error);
                 alert("OTP Error: " + error.message);
             }
         };
@@ -250,27 +256,35 @@
         window.handleSignUp = async function() {
             const username = document.querySelector('#register-screen input[placeholder="User Name"]').value;
             const password = document.querySelector('#register-screen input[placeholder="Password"]').value;
-            const phone = "+91" + document.querySelector('#register-screen input[type="tel"]').value;
+            const phoneInput = document.querySelector('#register-screen input[type="tel"]').value;
+            const phone = "+91" + phoneInput;
             const otp = document.querySelector('#register-screen input[placeholder="OTP Code"]').value;
+
+            if(!window.confirmationResult) return alert("send otp");
 
             try {
                 const result = await window.confirmationResult.confirm(otp);
                 await setDoc(doc(db, "users", phone), {
                     username: username,
                     password: password,
-                    phone: phone
+                    phone: phone,
+                    uid: result.user.uid
                 });
-                alert("Account Ban gaya! Ab login karein.");
+                alert("Account was created successfully! please login now.");
                 window.showScreen('login-screen');
             } catch (error) {
-                alert("Invalid OTP");
+                alert("Invalid OTP ya registration error.");
             }
         };
 
         // Login Function
         window.handleSignIn = async function() {
-            const phone = "+91" + document.getElementById('login-phone').value;
+            const phoneInput = document.getElementById('login-phone').value;
             const pass = document.getElementById('login-pass').value;
+            
+            if(!phoneInput || !pass) return alert("Details bharein");
+            
+            const phone = "+91" + phoneInput;
 
             try {
                 const userDoc = await getDoc(doc(db, "users", phone));
@@ -283,7 +297,10 @@
                 } else {
                     alert("User nahi mila!");
                 }
-            } catch (e) { alert("Login Error"); }
+            } catch (e) { 
+                console.error(e);
+                alert("Login Error: Connection check karein"); 
+            }
         };
 
         window.showScreen = function(screenId) {
@@ -293,8 +310,5 @@
             document.getElementById(screenId).classList.remove('hidden');
         };
     </script> 
-
-    <div id="recaptcha-container"></div>"
-};
 </body>
 </html>
