@@ -208,10 +208,93 @@
             }
         }
 
-        function handleSignUp() {
-            alert('Registration Successful! Please Login.');
-            showScreen('login-screen');
-        }
+        <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, RecaptchaVerifier, signInWithPhoneNumber } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDz3fgsgoS103gEs_T8-NK9Ej4o-v4", 
+            authDomain: "lucipay-4f05c.firebaseapp.com",
+            databaseURL: "https://lucipay-4f05c-default-rtdb.firebaseio.com",
+            projectId: "lucipay-4f05c",
+            storageBucket: "lucipay-4f05c.firebasestorage.app",
+            messagingSenderId: "44541075910",
+            appId: "1:44541075910:web:2ebd7502815ce3db",
+            measurementId: "G-X5JX8EG9HD"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // OTP Bhejne ka Function
+        window.sendOTP = async function() {
+            const phoneInput = document.querySelector('#register-screen input[type="tel"]').value;
+            const phone = "+91" + phoneInput;
+            
+            if(phoneInput.length < 10) return alert("Pura number dalein");
+
+            window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', { 'size': 'invisible' });
+
+            try {
+                const confirmationResult = await signInWithPhoneNumber(auth, phone, window.recaptchaVerifier);
+                window.confirmationResult = confirmationResult;
+                alert("OTP Bhej diya gaya hai!");
+            } catch (error) {
+                alert("OTP Error: " + error.message);
+            }
+        };
+
+        // Register Function
+        window.handleSignUp = async function() {
+            const username = document.querySelector('#register-screen input[placeholder="User Name"]').value;
+            const password = document.querySelector('#register-screen input[placeholder="Password"]').value;
+            const phone = "+91" + document.querySelector('#register-screen input[type="tel"]').value;
+            const otp = document.querySelector('#register-screen input[placeholder="OTP Code"]').value;
+
+            try {
+                const result = await window.confirmationResult.confirm(otp);
+                await setDoc(doc(db, "users", phone), {
+                    username: username,
+                    password: password,
+                    phone: phone
+                });
+                alert("Account Ban gaya! Ab login karein.");
+                window.showScreen('login-screen');
+            } catch (error) {
+                alert("Invalid OTP");
+            }
+        };
+
+        // Login Function
+        window.handleSignIn = async function() {
+            const phone = "+91" + document.getElementById('login-phone').value;
+            const pass = document.getElementById('login-pass').value;
+
+            try {
+                const userDoc = await getDoc(doc(db, "users", phone));
+                if (userDoc.exists()) {
+                    if (userDoc.data().password === pass) {
+                        alert("Welcome " + userDoc.data().username);
+                    } else {
+                        alert("Galat Password!");
+                    }
+                } else {
+                    alert("User nahi mila!");
+                }
+            } catch (e) { alert("Login Error"); }
+        };
+
+        window.showScreen = function(screenId) {
+            document.getElementById('login-screen').classList.add('hidden');
+            document.getElementById('register-screen').classList.add('hidden');
+            document.getElementById('reset-screen').classList.add('hidden');
+            document.getElementById(screenId).classList.remove('hidden');
+        };
     </script>
+
+    <div id="recaptcha-container"></div>"
+};
 </body>
 </html>
