@@ -172,6 +172,17 @@ function login(){
   .catch(err=>alert(err.message));
 }
 </script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
 
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyDz3fgsgoS1O3gEs_T8-NK9Ej4o-hkxvEo",
+  authDomain: "lucipay-4f05c.firebaseapp.com",
+  projectId: "lucipay-4f05c",
+};
+
+firebase.initializeApp(firebaseConfig);
+</script>
 </body>
 </html>
