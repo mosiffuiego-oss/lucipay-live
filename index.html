@@ -1,149 +1,55 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lucipay</title>
-    <style>
-        body {
-            background-color: #ffffff;
-            color: #000000;
-            font-family: Arial, sans-serif;
-            margin: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
-
-        .app-container {
-            width: 100%;
-            max-width: 380px;
-            padding: 20px;
-            text-align: center;
-        }
-
-        /* LP Logo with Black Circle */
-        .logo-circle {
-            background-color: #000000;
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin: 0 auto 10px;
-        }
-
-        .logo-text {
-            font-size: 60px;
-            font-weight: bold;
-            color: #d4af37; /* Gold */
-            letter-spacing: -2px;
-        }
-
-        .brand-name {
-            font-size: 32px;
-            color: #d4af37;
-            margin-bottom: 30px;
-            font-weight: bold;
-        }
-
-        .input-group {
-            background-color: #f0f0f0;
-            border-radius: 25px;
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            padding: 5px 20px;
-        }
-
-        .input-group span { font-size: 18px; margin-right: 10px; }
-
-        input {
-            width: 100%;
-            padding: 12px;
-            border: none;
-            background: transparent;
-            outline: none;
-            font-size: 16px;
-        }
-
-        .btn-main {
-            width: 100%;
-            padding: 15px;
-            background-color: #000000;
-            color: #ffffff;
-            border: none;
-            border-radius: 25px;
-            font-size: 18px;
-            font-weight: bold;
-            cursor: pointer;
-            margin-top: 15px;
-        }
-
-        /* Remember Me & Links Section */
-        .options-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin: 10px 5px;
-            font-size: 14px;
-        }
-
-        .remember-me { display: flex; align-items: center; }
-        .remember-me input { width: auto; margin-right: 5px; padding: 0; }
-
-        .privacy-row {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 13px;
-            margin-top: 20px;
-        }
-        .privacy-row input { width: auto; margin-right: 8px; }
-
-        .hidden { display: none; }
-        
-        .back-arrow {
-            text-align: left;
-            font-size: 24px;
-            cursor: pointer;
-            margin-bottom: 10px;
-            color: #000;
-        }
-
-        .send-otp-btn {
-            background-color: #000;
-            color: #fff;
-            border-radius: 15px;
-            padding: 5px 15px;
-            border: none;
-            cursor: pointer;
-        }
-    </style>
-</head>
-<body>
-
-    <div class="app-container">
-        
-        <div class="logo-circle">
-            <div class="logo-text">LP</div>
-        </div>
-        <div class="brand-name">Lucipay</div>
-
-        <div id="login-screen">
-            <div class="input-group"><span>👤</span><input type="tel" id="login-phone" placeholder="Phone"></div>
-            <div class="input-group"><span>🔒</span><input type="password" id="login-pass" placeholder="Password"></div>
-            
-            <div class="options-row">
-                <a href="javascript:void(0)" onclick="showScreen('register-screen')">Register</a>
-                <div class="remember-me">
-                    <input type="checkbox" id="rem"> <label for="rem">Remember Me</label>
-                </div>
+<div class="privacy-row">
+                <input type="checkbox" id="agree" checked> 
+                <label for="agree">Agree <a href="#" style="text-decoration:underline;">"User Privacy Agreement"</a></label>
             </div>
-                        <script>
-        // Normal function to switch screens
+
+            <button class="btn-main" onclick="handleSignIn()">Sign In</button>
+            <div style="margin-top: 20px;">
+                <a href="javascript:void(0)" onclick="showScreen('reset-screen')">Forget Password</a>
+            </div>
+        </div>
+
+        <div id="register-screen" class="hidden">
+            <h2 style="color:#000; margin-bottom:20px;">Register</h2>
+            <div class="input-group"><span>👤</span><input type="text" id="reg-username" placeholder="User Name"></div>
+            <div class="input-group"><span>🔒</span><input type="password" id="reg-password" placeholder="Password"></div>
+            <div class="input-group">
+                <span style="font-weight:bold; font-size:14px; color:green;">+91</span>
+                <input type="tel" id="reg-phone" placeholder="Phone">
+            </div>
+            <div class="input-group">
+                <span>✉️</span>
+                <input type="text" id="reg-otp" placeholder="OTP Code" style="flex-grow:1;">
+                <button class="send-otp-btn" onclick="sendOTP()">Send</button>
+            </div>
+            <div class="input-group"><span>🔗</span><input type="text" id="reg-invite" placeholder="Invite Code"></div>
+
+            <button class="btn-main" onclick="handleSignUp()">Sign Up</button>
+            <p><a href="javascript:void(0)" onclick="showScreen('login-screen')">Back to Login</a></p>
+        </div>
+
+        <div id="reset-screen" class="hidden">
+            <div class="back-arrow" onclick="showScreen('login-screen')">←</div>
+            <h2 style="color:#000; margin-bottom:20px;">Reset Password</h2>
+            <div class="input-group">
+                <span style="font-weight:bold; font-size:14px; color:green;">+91</span>
+                <input type="tel" id="reset-phone" placeholder="Phone">
+            </div>
+            <div class="input-group"><span>🔒</span><input type="password" id="reset-new-password" placeholder="New Password"></div>
+            <div class="input-group">
+                <span>✉️</span>
+                <input type="text" id="reset-otp" placeholder="OTP Code" style="flex-grow:1;">
+                <button class="send-otp-btn" onclick="sendResetOTP()">Send</button>
+            </div>
+            <button class="btn-main" onclick="handleResetPassword()">Reset Password</button>
+        </div>
+
+    </div>
+
+    <div id="recaptcha-container"></div>
+
+    <script>
+        // Screen switching logic (Same as yours)
         function showScreen(screenId) {
             document.getElementById('login-screen').classList.add('hidden');
             document.getElementById('register-screen').classList.add('hidden');
@@ -151,8 +57,6 @@
             document.getElementById(screenId).classList.remove('hidden');
         }
     </script>
-
-    <div id="recaptcha-container"></div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
@@ -176,11 +80,10 @@
 
         // OTP Bhejne ka Function
         window.sendOTP = async function() {
-            const phoneInput = document.querySelector('#register-screen input[type="tel"]').value;
-            if(!phoneInput || phoneInput.length < 10) return alert("Pura number dalein");
+            const phoneInput = document.getElementById('reg-phone').value;
+            if(!phoneInput || phoneInput.length < 10) return alert("Please enter valid 10 digit number");
             
             const phone = "+91" + phoneInput;
-
             if (!window.recaptchaVerifier) {
                 window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', { 'size': 'invisible' });
             }
@@ -188,20 +91,18 @@
             try {
                 const confirmationResult = await signInWithPhoneNumber(auth, phone, window.recaptchaVerifier);
                 window.confirmationResult = confirmationResult;
-                alert("OTP send successfully!");
+                alert("OTP sent successfully!");
             } catch (error) {
-                console.error(error);
                 alert("OTP Error: " + error.message);
             }
         };
 
-        // Register Function
+        // Sign Up / Register Function
         window.handleSignUp = async function() {
-            const username = document.querySelector('#register-screen input[placeholder="User Name"]').value;
-            const password = document.querySelector('#register-screen input[placeholder="Password"]').value;
-            const phoneInput = document.querySelector('#register-screen input[type="tel"]').value;
-            const phone = "+91" + phoneInput;
-            const otp = document.querySelector('#register-screen input[placeholder="OTP Code"]').value;
+            const username = document.getElementById('reg-username').value;
+            const password = document.getElementById('reg-password').value;
+            const phone = "+91" + document.getElementById('reg-phone').value;
+            const otp = document.getElementById('reg-otp').value;
 
             if(!window.confirmationResult) return alert("Please send OTP first");
 
@@ -213,38 +114,36 @@
                     phone: phone,
                     uid: result.user.uid
                 });
-                alert("Account was created successfully! Please login now.");
+                alert("Registration Successful!");
                 showScreen('login-screen');
             } catch (error) {
-                alert("Invalid OTP or Registration Error");
+                alert("Invalid OTP");
             }
         };
 
-        // Login Function
+        // Sign In / Login Function
         window.handleSignIn = async function() {
             const phoneInput = document.getElementById('login-phone').value;
             const pass = document.getElementById('login-pass').value;
-            
-            if(!phoneInput || !pass) return alert("Please enter phone and password");
+            if(!phoneInput || !pass) return alert("Enter Phone and Password");
             
             const phone = "+91" + phoneInput;
-
             try {
                 const userDoc = await getDoc(doc(db, "users", phone));
                 if (userDoc.exists()) {
                     if (userDoc.data().password === pass) {
                         alert("Welcome " + userDoc.data().username);
+                        // Dashboard redirect yahan daal sakte hain
                     } else {
-                        alert("Galat Password!");
+                        alert("Wrong Password!");
                     }
                 } else {
-                    alert("User nahi mila! Pehle register karein.");
+                    alert("User not found! Register first.");
                 }
-            } catch (e) { 
-                console.error(e);
-                alert("Login Error: Connection check karein"); 
+            } catch (e) {
+                alert("Login Error: Check connection");
             }
         };
-    </script> 
+    </script>
 </body>
-        </html>
+</html>
