@@ -142,73 +142,17 @@
                     <input type="checkbox" id="rem"> <label for="rem">Remember Me</label>
                 </div>
             </div>
-
-            <div class="privacy-row">
-                <input type="checkbox" id="agree" checked> 
-                <label for="agree">Agree <a href="#" style="text-decoration:underline;">"User Privacy Agreement"</a></label>
-            </div>
-
-            <button class="btn-main" onclick="handleSignIn()">Sign In</button>
-            <div style="margin-top: 20px;">
-                <a href="javascript:void(0)" onclick="showScreen('reset-screen')">Forget Password</a>
-            </div>
-        </div>
-
-        <div id="register-screen" class="hidden">
-            <h2 style="color:#000; margin-bottom:20px;">Register</h2>
-            <div class="input-group"><span>👤</span><input type="text" placeholder="User Name"></div>
-            <div class="input-group"><span>🔒</span><input type="password" placeholder="Password"></div>
-            <div class="input-group">
-                <span style="font-weight:bold; font-size:14px; color:green;">+91</span>
-                <input type="tel" placeholder="Phone">
-            </div>
-            <div class="input-group">
-                <span>✉️</span>
-                <input type="text" placeholder="OTP Code" style="flex-grow:1;">
-                <button class="send-otp-btn">Send</button>
-            </div>
-            <div class="input-group"><span>🔗</span><input type="text" placeholder="Invite Code"></div>
-
-            <button class="btn-main" onclick="handleSignUp()">Sign Up</button>
-            <p><a href="javascript:void(0)" onclick="showScreen('login-screen')">Back to Login</a></p>
-        </div>
-
-        <div id="reset-screen" class="hidden">
-            <div class="back-arrow" onclick="showScreen('login-screen')">←</div>
-            <h2 style="color:#000; margin-bottom:20px;">Reset Password</h2>
-            <div class="input-group">
-                <span style="font-weight:bold; font-size:14px; color:green;">+91</span>
-                <input type="tel" placeholder="Phone">
-            </div>
-            <div class="input-group"><span>🔒</span><input type="password" placeholder="New Password"></div>
-            <div class="input-group">
-                <span>✉️</span>
-                <input type="text" placeholder="OTP Code" style="flex-grow:1;">
-                <button class="send-otp-btn">Send</button>
-            </div>
-            <button class="btn-main" onclick="alert('Password Reset Link Sent!')">Reset Password</button>
-        </div>
-
-    </div>
-
-    <script>
+                        <script>
+        // Normal function to switch screens
         function showScreen(screenId) {
             document.getElementById('login-screen').classList.add('hidden');
             document.getElementById('register-screen').classList.add('hidden');
             document.getElementById('reset-screen').classList.add('hidden');
             document.getElementById(screenId).classList.remove('hidden');
         }
+    </script>
 
-        function handleSignIn() {
-            const phone = document.getElementById('login-phone').value;
-            if(phone) {
-                alert('Signing in with: ' + phone);
-            } else {
-                alert('Please enter your phone number');
-            }
-        }
-
-       <div id="recaptcha-container"></div>
+    <div id="recaptcha-container"></div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
@@ -237,7 +181,6 @@
             
             const phone = "+91" + phoneInput;
 
-            // Recaptcha reset if already exists
             if (!window.recaptchaVerifier) {
                 window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', { 'size': 'invisible' });
             }
@@ -260,7 +203,7 @@
             const phone = "+91" + phoneInput;
             const otp = document.querySelector('#register-screen input[placeholder="OTP Code"]').value;
 
-            if(!window.confirmationResult) return alert("send otp");
+            if(!window.confirmationResult) return alert("Please send OTP first");
 
             try {
                 const result = await window.confirmationResult.confirm(otp);
@@ -270,10 +213,10 @@
                     phone: phone,
                     uid: result.user.uid
                 });
-                alert("Account was created successfully! please login now.");
-                window.showScreen('login-screen');
+                alert("Account was created successfully! Please login now.");
+                showScreen('login-screen');
             } catch (error) {
-                alert("Invalid OTP ya registration error.");
+                alert("Invalid OTP or Registration Error");
             }
         };
 
@@ -282,7 +225,7 @@
             const phoneInput = document.getElementById('login-phone').value;
             const pass = document.getElementById('login-pass').value;
             
-            if(!phoneInput || !pass) return alert("Details bharein");
+            if(!phoneInput || !pass) return alert("Please enter phone and password");
             
             const phone = "+91" + phoneInput;
 
@@ -295,20 +238,13 @@
                         alert("Galat Password!");
                     }
                 } else {
-                    alert("User nahi mila!");
+                    alert("User nahi mila! Pehle register karein.");
                 }
             } catch (e) { 
                 console.error(e);
                 alert("Login Error: Connection check karein"); 
             }
         };
-
-        window.showScreen = function(screenId) {
-            document.getElementById('login-screen').classList.add('hidden');
-            document.getElementById('register-screen').classList.add('hidden');
-            document.getElementById('reset-screen').classList.add('hidden');
-            document.getElementById(screenId).classList.remove('hidden');
-        };
     </script> 
 </body>
-</html>
+        </html>
