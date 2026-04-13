@@ -5,11 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lucipay</title>
     <style>
-        /* --- CSS STYLES --- */
         body {
-            background-color: #ffffff; /* Black to White */
+            background-color: #ffffff;
             color: #000000;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: Arial, sans-serif;
             margin: 0;
             display: flex;
             justify-content: center;
@@ -24,36 +23,42 @@
             text-align: center;
         }
 
-        /* Logo Styling */
+        /* LP Logo with Black Circle */
+        .logo-circle {
+            background-color: #000000;
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto 10px;
+        }
+
         .logo-text {
-            font-size: 90px;
+            font-size: 60px;
             font-weight: bold;
-            color: #d4af37; /* Gold Color */
-            margin: 0;
-            line-height: 1;
+            color: #d4af37; /* Gold */
+            letter-spacing: -2px;
         }
 
         .brand-name {
             font-size: 32px;
             color: #d4af37;
-            margin-bottom: 40px;
-            font-weight: 500;
+            margin-bottom: 30px;
+            font-weight: bold;
         }
 
-        /* Input Fields */
         .input-group {
-            background-color: #f5f5f5; /* Light grey background for inputs */
-            border-radius: 12px;
+            background-color: #f0f0f0;
+            border-radius: 25px;
             margin-bottom: 15px;
             display: flex;
             align-items: center;
-            padding: 5px 15px;
+            padding: 5px 20px;
         }
 
-        .input-group span {
-            font-size: 18px;
-            margin-right: 10px;
-        }
+        .input-group span { font-size: 18px; margin-right: 10px; }
 
         input {
             width: 100%;
@@ -62,60 +67,59 @@
             background: transparent;
             outline: none;
             font-size: 16px;
-            color: #000000;
         }
 
-        /* Buttons (Green changed to Black) */
         .btn-main {
             width: 100%;
             padding: 15px;
-            background-color: #000000; /* Green to Black */
+            background-color: #000000;
             color: #ffffff;
             border: none;
             border-radius: 25px;
             font-size: 18px;
             font-weight: bold;
             cursor: pointer;
-            margin-top: 20px;
-        }
-
-        .btn-send {
-            background-color: #000000;
-            color: white;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 8px;
-            cursor: pointer;
-        }
-
-        /* Links */
-        .links-container {
-            display: flex;
-            justify-content: space-between;
             margin-top: 15px;
         }
 
-        a {
-            color: #000000;
-            text-decoration: none;
+        /* Remember Me & Links Section */
+        .options-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 10px 5px;
             font-size: 14px;
         }
 
+        .remember-me { display: flex; align-items: center; }
+        .remember-me input { width: auto; margin-right: 5px; padding: 0; }
+
         .privacy-row {
-            text-align: left;
-            font-size: 13px;
             display: flex;
+            justify-content: center;
             align-items: center;
-            margin-top: 10px;
+            font-size: 13px;
+            margin-top: 20px;
         }
+        .privacy-row input { width: auto; margin-right: 8px; }
 
         .hidden { display: none; }
         
-        .back-btn {
+        .back-arrow {
             text-align: left;
             font-size: 24px;
             cursor: pointer;
             margin-bottom: 10px;
+            color: #000;
+        }
+
+        .send-otp-btn {
+            background-color: #000;
+            color: #fff;
+            border-radius: 15px;
+            padding: 5px 15px;
+            border: none;
+            cursor: pointer;
         }
     </style>
 </head>
@@ -123,76 +127,90 @@
 
     <div class="app-container">
         
-        <div class="logo-text">LP</div>
+        <div class="logo-circle">
+            <div class="logo-text">LP</div>
+        </div>
         <div class="brand-name">Lucipay</div>
 
         <div id="login-screen">
-            <div class="input-group">
-                <span>👤</span>
-                <input type="tel" placeholder="Phone">
-            </div>
-            <div class="input-group">
-                <span>🔒</span>
-                <input type="password" placeholder="Password">
-            </div>
+            <div class="input-group"><span>👤</span><input type="tel" id="login-phone" placeholder="Phone"></div>
+            <div class="input-group"><span>🔒</span><input type="password" id="login-pass" placeholder="Password"></div>
             
-            <div class="privacy-row">
-                <input type="checkbox" checked> 
-                <span>Agree <a href="#" style="text-decoration:underline;">"User Privacy Agreement"</a></span>
+            <div class="options-row">
+                <a href="javascript:void(0)" onclick="showScreen('register-screen')">Register</a>
+                <div class="remember-me">
+                    <input type="checkbox" id="rem"> <label for="rem">Remember Me</label>
+                </div>
             </div>
 
-            <button class="btn-main">Sign In</button>
+            <div class="privacy-row">
+                <input type="checkbox" id="agree" checked> 
+                <label for="agree">Agree <a href="#" style="text-decoration:underline;">"User Privacy Agreement"</a></label>
+            </div>
 
-            <div class="links-container">
-                <a href="javascript:void(0)" onclick="showScreen('register-screen')">Register</a>
+            <button class="btn-main" onclick="handleSignIn()">Sign In</button>
+            <div style="margin-top: 20px;">
                 <a href="javascript:void(0)" onclick="showScreen('reset-screen')">Forget Password</a>
             </div>
         </div>
 
         <div id="register-screen" class="hidden">
+            <h2 style="color:#000; margin-bottom:20px;">Register</h2>
             <div class="input-group"><span>👤</span><input type="text" placeholder="User Name"></div>
             <div class="input-group"><span>🔒</span><input type="password" placeholder="Password"></div>
             <div class="input-group">
-                <span style="font-weight:bold; font-size:14px;">+91</span>
+                <span style="font-weight:bold; font-size:14px; color:green;">+91</span>
                 <input type="tel" placeholder="Phone">
             </div>
             <div class="input-group">
                 <span>✉️</span>
-                <input type="text" placeholder="OTP Code">
-                <button class="btn-send">Send</button>
+                <input type="text" placeholder="OTP Code" style="flex-grow:1;">
+                <button class="send-otp-btn">Send</button>
             </div>
             <div class="input-group"><span>🔗</span><input type="text" placeholder="Invite Code"></div>
 
-            <button class="btn-main">Sign Up</button>
-            <p><a href="javascript:void(0)" onclick="showScreen('login-screen')">Already have an account? Login</a></p>
+            <button class="btn-main" onclick="handleSignUp()">Sign Up</button>
+            <p><a href="javascript:void(0)" onclick="showScreen('login-screen')">Back to Login</a></p>
         </div>
 
         <div id="reset-screen" class="hidden">
-            <div class="back-btn" onclick="showScreen('login-screen')">←</div>
+            <div class="back-arrow" onclick="showScreen('login-screen')">←</div>
+            <h2 style="color:#000; margin-bottom:20px;">Reset Password</h2>
             <div class="input-group">
-                <span style="font-weight:bold; font-size:14px;">+91</span>
+                <span style="font-weight:bold; font-size:14px; color:green;">+91</span>
                 <input type="tel" placeholder="Phone">
             </div>
             <div class="input-group"><span>🔒</span><input type="password" placeholder="New Password"></div>
             <div class="input-group">
                 <span>✉️</span>
-                <input type="text" placeholder="OTP Code">
-                <button class="btn-send">Send</button>
+                <input type="text" placeholder="OTP Code" style="flex-grow:1;">
+                <button class="send-otp-btn">Send</button>
             </div>
-
-            <button class="btn-main">Reset Password</button>
+            <button class="btn-main" onclick="alert('Password Reset Link Sent!')">Reset Password</button>
         </div>
 
     </div>
 
     <script>
-        // Function to switch between screens
         function showScreen(screenId) {
             document.getElementById('login-screen').classList.add('hidden');
             document.getElementById('register-screen').classList.add('hidden');
             document.getElementById('reset-screen').classList.add('hidden');
-            
             document.getElementById(screenId).classList.remove('hidden');
+        }
+
+        function handleSignIn() {
+            const phone = document.getElementById('login-phone').value;
+            if(phone) {
+                alert('Signing in with: ' + phone);
+            } else {
+                alert('Please enter your phone number');
+            }
+        }
+
+        function handleSignUp() {
+            alert('Registration Successful! Please Login.');
+            showScreen('login-screen');
         }
     </script>
 </body>
