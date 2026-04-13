@@ -1,211 +1,256 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Luci Payment</title>
 
 <style>
-body {
-  margin: 0;
-  background: #0b0f14;
-  font-family: Arial;
-  color: white;
+body{margin:0;background:#0b0f14;color:white;font-family:Arial}
+
+/* Splash */
+#splash{
+position:fixed;width:100%;height:100%;background:black;
+display:flex;flex-direction:column;justify-content:center;align-items:center;
+z-index:999;overflow:hidden;
+}
+#title{font-size:40px;animation:glow 1.5s infinite alternate}
+#lpLogo{
+width:80px;height:80px;border-radius:50%;border:2px solid white;
+display:flex;align-items:center;justify-content:center;margin-top:20px;
+}
+@keyframes glow{
+from{text-shadow:0 0 5px red}
+to{text-shadow:0 0 20px blue}
 }
 
-.logo {
-  text-align: center;
-  margin-top: 60px;
+/* Logo */
+.logo{text-align:center;margin-top:60px}
+.circle{
+width:80px;height:80px;border-radius:50%;
+background:#16a34a;display:flex;align-items:center;justify-content:center;
+margin:auto;font-size:30px;
 }
 
-.logo h1 {
-  font-size: 50px;
-  color: gold;
+/* Inputs */
+.container{width:90%;max-width:400px;margin:auto}
+input{
+width:100%;padding:14px;margin:10px 0;border-radius:25px;
+border:none;background:#11161d;color:white;
 }
 
-.logo p {
-  color: gold;
-  font-size: 22px;
+button{
+width:100%;padding:14px;border:none;border-radius:25px;
+background:#16a34a;color:white;font-size:16px;
 }
 
-.container {
-  width: 90%;
-  max-width: 400px;
-  margin: auto;
-  margin-top: 30px;
+.row{
+display:flex;justify-content:space-between;color:#16a34a;font-size:14px;
 }
 
-.input-box {
-  display: flex;
-  align-items: center;
-  background: #11161d;
-  border-radius: 25px;
-  padding: 14px;
-  margin: 12px 0;
+/* Animation */
+#profileBox{
+position:fixed;top:50%;left:50%;
+transform:translate(-50%,-50%);
+text-align:center;transition:1s;
 }
-
-.input-box span {
-  margin-right: 10px;
+#profilePic{
+width:80px;height:80px;border-radius:50%;
+background:#16a34a;display:flex;align-items:center;justify-content:center;
+font-size:35px;margin:auto;
 }
-
-.input-box input {
-  background: none;
-  border: none;
-  outline: none;
-  color: white;
-  width: 100%;
-}
-
-button {
-  width: 100%;
-  padding: 14px;
-  border-radius: 25px;
-  border: none;
-  background: #16a34a;
-  color: white;
-  font-size: 18px;
-}
-
-.link {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 10px;
-  color: #16a34a;
-  font-size: 14px;
-}
-
-.center {
-  text-align: center;
-  margin-top: 10px;
-  color: #16a34a;
-}
-
-#register {
-  display: none;
-}
+.moveTop{top:20px!important;left:20px!important;transform:none!important}
 </style>
 </head>
 
 <body>
 
-<div class="logo">
-  <h1>LP</h1>
-  <p>Luci Payment</p>
+<!-- Splash -->
+<div id="splash">
+<h1 id="title">Lucipay</h1>
+<div id="lpLogo">LP</div>
 </div>
-
-<div class="container">
 
 <!-- LOGIN -->
 <div id="login">
-  <div class="input-box">
-    <span>👤</span>
-    <input type="text" id="phone" placeholder="Phone / Username">
-  </div>
+<div class="logo">
+<div class="circle">LP</div>
+<h2>Lucipay</h2>
+</div>
 
-  <div class="input-box">
-    <span>🔒</span>
-    <input type="password" id="password" placeholder="Password">
-  </div>
+<div class="container">
+<input id="phone" placeholder="Number">
+<input id="password" type="password" placeholder="Password">
 
-  <div class="link">
-    <span onclick="showRegister()">Register</span>
-    <span>Remember Me ✔</span>
-  </div>
+<button onclick="login()">Login</button>
 
-  <button onclick="login()">Sign In</button>
-
-  <div class="center" onclick="resetPassword()">Forget Password</div>
+<div class="row">
+<span onclick="showRegister()">Register</span>
+<span>Remember Me</span>
+<span onclick="showForgot()">Forget</span>
+</div>
+</div>
 </div>
 
 <!-- REGISTER -->
-<div id="register">
-  <h2 style="text-align:center;color:#16a34a;">Register</h2>
+<div id="register" style="display:none">
+<div class="container">
+<input id="username" placeholder="Username">
+<input id="rpass" placeholder="Password">
+<input id="rphone" placeholder="Phone">
 
-  <div class="input-box">
-    <span>👤</span>
-    <input type="text" id="rphone" placeholder="Phone">
-  </div>
+<input id="otp" placeholder="OTP">
+<button onclick="sendOTP()">Send OTP</button>
 
-  <div class="input-box">
-    <span>🔒</span>
-    <input type="password" id="rpass" placeholder="Password">
-  </div>
+<input id="invite" placeholder="Invite Code">
 
-  <button onclick="register()">Sign Up</button>
-
-  <div class="center" onclick="showLogin()">Back to Login</div>
+<button onclick="verifyOTP()">Register</button>
+<button onclick="showLogin()">Back</button>
+</div>
 </div>
 
+<!-- FORGOT -->
+<div id="forgot" style="display:none">
+<div class="container">
+<input id="fphone" placeholder="Phone">
+<input id="fotp" placeholder="OTP">
+<button onclick="sendForgotOTP()">Send OTP</button>
+
+<input id="newpass" placeholder="New Password">
+<button onclick="resetPassword()">Change Password</button>
+</div>
+</div>
+
+<!-- ANIMATION -->
+<div id="welcomeAnim" style="display:none">
+<div id="profileBox">
+<div id="profilePic">👤</div>
+<h2 id="wname"></h2>
+<p id="wuid"></p>
+</div>
+</div>
+
+<!-- DASHBOARD -->
+<div id="dashboard" style="display:none;padding:20px">
+<div style="position:absolute;top:20px;left:20px">
+<div class="circle">LP</div>
+<p id="dname"></p>
+<small id="duid"></small>
+</div>
+
+<h2 style="margin-top:120px">Balance ₹<span id="balance">0</span></h2>
+<button onclick="earn()">Earn ₹10</button>
+<button onclick="logout()">Logout</button>
 </div>
 
 <!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
 <script>
-const firebaseConfig = {
-  apiKey: "AIzaSyDz3fgsgoS1O3gEs_T8-NK9Ej4o-hkxvEo",
-  authDomain: "lucipay-4f05c.firebaseapp.com",
-  projectId: "lucipay-4f05c",
-};
+firebase.initializeApp({
+apiKey:"YOUR_KEY",
+authDomain:"YOUR_DOMAIN",
+databaseURL:"YOUR_DB_URL",
+projectId:"YOUR_ID"
+});
 
-firebase.initializeApp(firebaseConfig);
+// Splash hide
+setTimeout(()=>{splash.style.display="none"},2500);
 
-// Switch screens
-function showRegister(){
-  document.getElementById("login").style.display="none";
-  document.getElementById("register").style.display="block";
-}
+// Page switch
+function showRegister(){login.style.display="none";register.style.display="block"}
+function showLogin(){register.style.display="none";login.style.display="block";forgot.style.display="none"}
+function showForgot(){login.style.display="none";forgot.style.display="block"}
 
-function showLogin(){
-  document.getElementById("login").style.display="block";
-  document.getElementById("register").style.display="none";
+// OTP
+function sendOTP(){
+let phone=rphone.value;
+window.recaptchaVerifier=new firebase.auth.RecaptchaVerifier('splash');
+firebase.auth().signInWithPhoneNumber("+91"+phone,window.recaptchaVerifier)
+.then(res=>{confirmationResult=res;alert("OTP sent")});
 }
 
 // Register
-function register(){
-  let phone = document.getElementById("rphone").value;
-  let pass = document.getElementById("rpass").value;
+function verifyOTP(){
+confirmationResult.confirm(otp.value).then(()=>{
+let uid=Math.floor(10000+Math.random()*90000);
 
-  if(!phone || !pass){
-    alert("Fill all fields");
-    return;
-  }
+firebase.database().ref("users/"+uid).set({
+username:username.value,
+phone:rphone.value,
+password:rpass.value,
+uid:uid,
+balance:0
+});
 
-  let email = phone + "@lucipay.com";
-
-  firebase.auth().createUserWithEmailAndPassword(email, pass)
-  .then(()=>alert("Registered Successfully"))
-  .catch(err=>alert(err.message));
+alert("Registered");
+showLogin();
+});
 }
 
 // Login
 function login(){
-  let phone = document.getElementById("phone").value;
-  let pass = document.getElementById("password").value;
+firebase.database().ref("users").once("value",snap=>{
+snap.forEach(d=>{
+let u=d.val();
+if(u.phone==phone.value && u.password==password.value){
 
-  let email = phone + "@lucipay.com";
+login.style.display="none";
+welcomeAnim.style.display="block";
 
-  firebase.auth().signInWithEmailAndPassword(email, pass)
-  .then(()=>alert("Login Success"))
-  .catch(err=>alert(err.message));
+wname.innerText=u.username;
+wuid.innerText="UID: "+u.uid;
+
+profilePic.innerText = u.username.toLowerCase().includes("girl") ? "👩" : "👨";
+
+window.currentUID=u.uid;
+
+setTimeout(()=>{profileBox.classList.add("moveTop")},1000);
+
+setTimeout(()=>{
+welcomeAnim.style.display="none";
+dashboard.style.display="block";
+dname.innerText=u.username;
+duid.innerText="UID:"+u.uid;
+balance.innerText=u.balance;
+},2500);
+
+}
+});
+});
 }
 
-// Forget Password
+// Earn
+function earn(){
+let ref=firebase.database().ref("users/"+currentUID);
+ref.once("value").then(snap=>{
+let data=snap.val();
+let newBal=data.balance+10;
+ref.update({balance:newBal});
+balance.innerText=newBal;
+});
+}
+
+// Forgot
+function sendForgotOTP(){
+alert("Use same OTP system");
+}
 function resetPassword(){
-  let phone = document.getElementById("phone").value;
-
-  if(!phone){
-    alert("Enter phone first");
-    return;
-  }
-
-  let email = phone + "@lucipay.com";
-
-  firebase.auth().sendPasswordResetEmail(email)
-  .then(()=>alert("Reset link sent to email"))
-  .catch(err=>alert(err.message));
+firebase.database().ref("users").once("value",snap=>{
+snap.forEach(d=>{
+let u=d.val();
+if(u.phone==fphone.value){
+firebase.database().ref("users/"+u.uid).update({
+password:newpass.value
+});
+alert("Password Changed");
 }
+});
+});
+}
+
+function logout(){location.reload()}
 </script>
 
 </body>
