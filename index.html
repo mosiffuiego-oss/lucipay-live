@@ -1,257 +1,199 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Luci Payment</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lucipay</title>
+    <style>
+        /* --- CSS STYLES --- */
+        body {
+            background-color: #ffffff; /* Black to White */
+            color: #000000;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
 
-<style>
-body{margin:0;background:#0b0f14;color:white;font-family:Arial}
+        .app-container {
+            width: 100%;
+            max-width: 380px;
+            padding: 20px;
+            text-align: center;
+        }
 
-/* Splash */
-#splash{
-position:fixed;width:100%;height:100%;background:black;
-display:flex;flex-direction:column;justify-content:center;align-items:center;
-z-index:999;overflow:hidden;
-}
-#title{font-size:40px;animation:glow 1.5s infinite alternate}
-#lpLogo{
-width:80px;height:80px;border-radius:50%;border:2px solid white;
-display:flex;align-items:center;justify-content:center;margin-top:20px;
-}
-@keyframes glow{
-from{text-shadow:0 0 5px red}
-to{text-shadow:0 0 20px blue}
-}
+        /* Logo Styling */
+        .logo-text {
+            font-size: 90px;
+            font-weight: bold;
+            color: #d4af37; /* Gold Color */
+            margin: 0;
+            line-height: 1;
+        }
 
-/* Logo */
-.logo{text-align:center;margin-top:60px}
-.circle{
-width:80px;height:80px;border-radius:50%;
-background:#16a34a;display:flex;align-items:center;justify-content:center;
-margin:auto;font-size:30px;
-}
+        .brand-name {
+            font-size: 32px;
+            color: #d4af37;
+            margin-bottom: 40px;
+            font-weight: 500;
+        }
 
-/* Inputs */
-.container{width:90%;max-width:400px;margin:auto}
-input{
-width:100%;padding:14px;margin:10px 0;border-radius:25px;
-border:none;background:#11161d;color:white;
-}
+        /* Input Fields */
+        .input-group {
+            background-color: #f5f5f5; /* Light grey background for inputs */
+            border-radius: 12px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            padding: 5px 15px;
+        }
 
-button{
-width:100%;padding:14px;border:none;border-radius:25px;
-background:#16a34a;color:white;font-size:16px;
-}
+        .input-group span {
+            font-size: 18px;
+            margin-right: 10px;
+        }
 
-.row{
-display:flex;justify-content:space-between;color:#16a34a;font-size:14px;
-}
+        input {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            background: transparent;
+            outline: none;
+            font-size: 16px;
+            color: #000000;
+        }
 
-/* Animation */
-#profileBox{
-position:fixed;top:50%;left:50%;
-transform:translate(-50%,-50%);
-text-align:center;transition:1s;
-}
-#profilePic{
-width:80px;height:80px;border-radius:50%;
-background:#16a34a;display:flex;align-items:center;justify-content:center;
-font-size:35px;margin:auto;
-}
-.moveTop{top:20px!important;left:20px!important;transform:none!important}
-</style>
+        /* Buttons (Green changed to Black) */
+        .btn-main {
+            width: 100%;
+            padding: 15px;
+            background-color: #000000; /* Green to Black */
+            color: #ffffff;
+            border: none;
+            border-radius: 25px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        .btn-send {
+            background-color: #000000;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        /* Links */
+        .links-container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+        }
+
+        a {
+            color: #000000;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .privacy-row {
+            text-align: left;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        .hidden { display: none; }
+        
+        .back-btn {
+            text-align: left;
+            font-size: 24px;
+            cursor: pointer;
+            margin-bottom: 10px;
+        }
+    </style>
 </head>
-
 <body>
 
-<!-- Splash -->
-<div id="splash">
-<h1 id="title">Lucipay</h1>
-<div id="lpLogo">LP</div>
-</div>
+    <div class="app-container">
+        
+        <div class="logo-text">LP</div>
+        <div class="brand-name">Lucipay</div>
 
-<!-- LOGIN -->
-<div id="login">
-<div class="logo">
-<div class="circle">LP</div>
-<h2>Lucipay</h2>
-</div>
+        <div id="login-screen">
+            <div class="input-group">
+                <span>👤</span>
+                <input type="tel" placeholder="Phone">
+            </div>
+            <div class="input-group">
+                <span>🔒</span>
+                <input type="password" placeholder="Password">
+            </div>
+            
+            <div class="privacy-row">
+                <input type="checkbox" checked> 
+                <span>Agree <a href="#" style="text-decoration:underline;">"User Privacy Agreement"</a></span>
+            </div>
 
-<div class="container">
-<input id="phone" placeholder="Number">
-<input id="password" type="password" placeholder="Password">
+            <button class="btn-main">Sign In</button>
 
-<button onclick="login()">Login</button>
+            <div class="links-container">
+                <a href="javascript:void(0)" onclick="showScreen('register-screen')">Register</a>
+                <a href="javascript:void(0)" onclick="showScreen('reset-screen')">Forget Password</a>
+            </div>
+        </div>
 
-<div class="row">
-<span onclick="showRegister()">Register</span>
-<span>Remember Me</span>
-<span onclick="showForgot()">Forget</span>
-</div>
-</div>
-</div>
+        <div id="register-screen" class="hidden">
+            <div class="input-group"><span>👤</span><input type="text" placeholder="User Name"></div>
+            <div class="input-group"><span>🔒</span><input type="password" placeholder="Password"></div>
+            <div class="input-group">
+                <span style="font-weight:bold; font-size:14px;">+91</span>
+                <input type="tel" placeholder="Phone">
+            </div>
+            <div class="input-group">
+                <span>✉️</span>
+                <input type="text" placeholder="OTP Code">
+                <button class="btn-send">Send</button>
+            </div>
+            <div class="input-group"><span>🔗</span><input type="text" placeholder="Invite Code"></div>
 
-<!-- REGISTER -->
-<div id="register" style="display:none">
-<div class="container">
-<input id="username" placeholder="Username">
-<input id="rpass" placeholder="Password">
-<input id="rphone" placeholder="Phone">
+            <button class="btn-main">Sign Up</button>
+            <p><a href="javascript:void(0)" onclick="showScreen('login-screen')">Already have an account? Login</a></p>
+        </div>
 
-<input id="otp" placeholder="OTP">
-<button onclick="sendOTP()">Send OTP</button>
+        <div id="reset-screen" class="hidden">
+            <div class="back-btn" onclick="showScreen('login-screen')">←</div>
+            <div class="input-group">
+                <span style="font-weight:bold; font-size:14px;">+91</span>
+                <input type="tel" placeholder="Phone">
+            </div>
+            <div class="input-group"><span>🔒</span><input type="password" placeholder="New Password"></div>
+            <div class="input-group">
+                <span>✉️</span>
+                <input type="text" placeholder="OTP Code">
+                <button class="btn-send">Send</button>
+            </div>
 
-<input id="invite" placeholder="Invite Code">
+            <button class="btn-main">Reset Password</button>
+        </div>
 
-<button onclick="verifyOTP()">Register</button>
-<button onclick="showLogin()">Back</button>
-</div>
-</div>
+    </div>
 
-<!-- FORGOT -->
-<div id="forgot" style="display:none">
-<div class="container">
-<input id="fphone" placeholder="Phone">
-<input id="fotp" placeholder="OTP">
-<button onclick="sendForgotOTP()">Send OTP</button>
-
-<input id="newpass" placeholder="New Password">
-<button onclick="resetPassword()">Change Password</button>
-</div>
-</div>
-
-<!-- ANIMATION -->
-<div id="welcomeAnim" style="display:none">
-<div id="profileBox">
-<div id="profilePic">👤</div>
-<h2 id="wname"></h2>
-<p id="wuid"></p>
-</div>
-</div>
-
-<!-- DASHBOARD -->
-<div id="dashboard" style="display:none;padding:20px">
-<div style="position:absolute;top:20px;left:20px">
-<div class="circle">LP</div>
-<p id="dname"></p>
-<small id="duid"></small>
-</div>
-
-<h2 style="margin-top:120px">Balance ₹<span id="balance">0</span></h2>
-<button onclick="earn()">Earn ₹10</button>
-<button onclick="logout()">Logout</button>
-</div>
-
-<!-- Firebase -->
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-
-<script>
-firebase.initializeApp({
-apiKey:"YOUR_KEY",
-authDomain:"YOUR_DOMAIN",
-databaseURL:"YOUR_DB_URL",
-projectId:"YOUR_ID"
-});
-
-// Splash hide
-setTimeout(()=>{splash.style.display="none"},2500);
-
-// Page switch
-function showRegister(){login.style.display="none";register.style.display="block"}
-function showLogin(){register.style.display="none";login.style.display="block";forgot.style.display="none"}
-function showForgot(){login.style.display="none";forgot.style.display="block"}
-
-// OTP
-function sendOTP(){
-let phone=rphone.value;
-window.recaptchaVerifier=new firebase.auth.RecaptchaVerifier('splash');
-firebase.auth().signInWithPhoneNumber("+91"+phone,window.recaptchaVerifier)
-.then(res=>{confirmationResult=res;alert("OTP sent")});
-}
-
-// Register
-function verifyOTP(){
-confirmationResult.confirm(otp.value).then(()=>{
-let uid=Math.floor(10000+Math.random()*90000);
-
-firebase.database().ref("users/"+uid).set({
-username:username.value,
-phone:rphone.value,
-password:rpass.value,
-uid:uid,
-balance:0
-});
-
-alert("Registered");
-showLogin();
-});
-}
-
-// Login
-function login(){
-firebase.database().ref("users").once("value",snap=>{
-snap.forEach(d=>{
-let u=d.val();
-if(u.phone==phone.value && u.password==password.value){
-
-login.style.display="none";
-welcomeAnim.style.display="block";
-
-wname.innerText=u.username;
-wuid.innerText="UID: "+u.uid;
-
-profilePic.innerText = u.username.toLowerCase().includes("girl") ? "👩" : "👨";
-
-window.currentUID=u.uid;
-
-setTimeout(()=>{profileBox.classList.add("moveTop")},1000);
-
-setTimeout(()=>{
-welcomeAnim.style.display="none";
-dashboard.style.display="block";
-dname.innerText=u.username;
-duid.innerText="UID:"+u.uid;
-balance.innerText=u.balance;
-},2500);
-
-}
-});
-});
-}
-
-// Earn
-function earn(){
-let ref=firebase.database().ref("users/"+currentUID);
-ref.once("value").then(snap=>{
-let data=snap.val();
-let newBal=data.balance+10;
-ref.update({balance:newBal});
-balance.innerText=newBal;
-});
-}
-
-// Forgot
-function sendForgotOTP(){
-alert("Use same OTP system");
-}
-function resetPassword(){
-firebase.database().ref("users").once("value",snap=>{
-snap.forEach(d=>{
-let u=d.val();
-if(u.phone==fphone.value){
-firebase.database().ref("users/"+u.uid).update({
-password:newpass.value
-});
-alert("Password Changed");
-}
-});
-});
-}
-
-function logout(){location.reload()}
-</script>
-
+    <script>
+        // Function to switch between screens
+        function showScreen(screenId) {
+            document.getElementById('login-screen').classList.add('hidden');
+            document.getElementById('register-screen').classList.add('hidden');
+            document.getElementById('reset-screen').classList.add('hidden');
+            
+            document.getElementById(screenId).classList.remove('hidden');
+        }
+    </script>
 </body>
 </html>
