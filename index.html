@@ -23,7 +23,6 @@
             text-align: center;
         }
 
-        /* LP Logo with Black Circle */
         .logo-circle {
             background-color: #000000;
             width: 120px;
@@ -38,7 +37,7 @@
         .logo-text {
             font-size: 60px;
             font-weight: bold;
-            color: #d4af37; /* Gold */
+            color: #d4af37; 
             letter-spacing: -2px;
         }
 
@@ -82,7 +81,6 @@
             margin-top: 15px;
         }
 
-        /* Remember Me & Links Section */
         .options-row {
             display: flex;
             justify-content: space-between;
@@ -126,7 +124,6 @@
 <body>
 
     <div class="app-container">
-        
         <div class="logo-circle">
             <div class="logo-text">LP</div>
         </div>
@@ -187,13 +184,12 @@
             </div>
             <button class="btn-main" onclick="handleResetPassword()">Reset Password</button>
         </div>
-
     </div>
 
     <div id="recaptcha-container"></div>
 
     <script>
-        // Screen switching logic (Same as yours)
+        // Screen switching logic
         function showScreen(screenId) {
             document.getElementById('login-screen').classList.add('hidden');
             document.getElementById('register-screen').classList.add('hidden');
@@ -203,79 +199,121 @@
     </script>
 
     <script type="module">
-  // Firebase SDKs ko CDN se import karein
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-  import { getAuth, RecaptchaVerifier, signInWithPhoneNumber } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-  import { getDatabase, ref, set, get, child } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, RecaptchaVerifier, signInWithPhoneNumber } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getDatabase, ref, set, get, child } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-  // Aapka naya configuration
-  const firebaseConfig = {
-  apiKey: "AIzaSyB8KbPR9uCnC1255bRCVzJEYxlH3xJpj2A",
-  authDomain: "lucipay-90518.firebaseapp.com",
-  databaseURL: "https://lucipay-90518-default-rtdb.firebaseio.com",
-  projectId: "lucipay-90518",
-  storageBucket: "lucipay-90518.firebasestorage.app",
-  messagingSenderId: "894528058632",
-  appId: "1:894528058632:web:d981963ae30de1ba1768bd"
-};
+        const firebaseConfig = {
+            apiKey: "AIzaSyB8KbPR9uCnC1255bRCVzJEYxlH3xJpj2A",
+            authDomain: "lucipay-90518.firebaseapp.com",
+            databaseURL: "https://lucipay-90518-default-rtdb.firebaseio.com",
+            projectId: "lucipay-90518",
+            storageBucket: "lucipay-90518.firebasestorage.app",
+            messagingSenderId: "894528058632",
+            appId: "1:894528058632:web:d981963ae30de1ba1768bd"
+        };
 
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-  const db = getDatabase(app);
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getDatabase(app);
 
-  // OTP Bhejne ka function
-  window.sendOTP = async function() {
-      const phoneInput = document.getElementById('reg-phone').value;
-      if(!phoneInput || phoneInput.length < 10) return alert("Sahi number dalein");
-      
-      const phone = "+91" + phoneInput;
-      // reCAPTCHA setup
-      if (!window.recaptchaVerifier) {
-          window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', { 'size': 'invisible' });
-      }
+        // --- SIGN UP LOGIC ---
+        window.sendOTP = async function() {
+            const phoneInput = document.getElementById('reg-phone').value;
+            if(!phoneInput || phoneInput.length < 10) return alert("Sahi number dalein");
+            const phone = "+91" + phoneInput;
+            if (!window.recaptchaVerifier) {
+                window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', { 'size': 'invisible' });
+            }
+            try {
+                window.confirmationResult = await signInWithPhoneNumber(auth, phone, window.recaptchaVerifier);
+                alert("OTP bhej diya gaya hai!");
+            } catch (error) {
+                alert("OTP Error: " + error.message);
+            }
+        };
 
-      try {
-          const confirmationResult = await signInWithPhoneNumber(auth, phone, window.recaptchaVerifier);
-          window.confirmationResult = confirmationResult;
-          alert("OTP bhej diya gaya hai!");
-      } catch (error) {
-          alert("OTP Error: " + error.message);
-      }
-  };
+        window.handleSignUp = async function() {
+            const username = document.getElementById('reg-username').value;
+            const password = document.getElementById('reg-password').value;
+            const phone = document.getElementById('reg-phone').value;
+            const otp = document.getElementById('reg-otp').value;
+            if(!window.confirmationResult) return alert("Pehle OTP mangwayein");
+            try {
+                await window.confirmationResult.confirm(otp);
+                await set(ref(db, 'users/' + phone), {
+                    username: username,
+                    password: password,
+                    phone: "+91" + phone,
+                    balance: 0,
+                    uid: "LP" + Math.floor(1000 + Math.random() * 9000)
+                });
+                alert("Registration Successful!");
+                showScreen('login-screen');
+            } catch (error) {
+                alert("Error: " + error.message);
+            }
+        };
 
-  // Registration aur Database mein data save karna
-  // Sign In Function 
-  window.handleSignIn = async function() {
-      const phone = document.getElementById('login-phone').value;
-      const pass = document.getElementById('login-pass').value;
+        // --- SIGN IN LOGIC ---
+        window.handleSignIn = async function() {
+            const phone = document.getElementById('login-phone').value;
+            const pass = document.getElementById('login-pass').value;
+            if(!phone || !pass) return alert("Details bhariye!");
+            try {
+                const snapshot = await get(child(ref(db), `users/${phone}`));
+                if (snapshot.exists()) {
+                    const userData = snapshot.val();
+                    if (userData.password === pass) {
+                        alert("Welcome back, " + userData.username + "!");
+                        // Dashboard screen yahan add kar sakte ho
+                    } else {
+                        alert("Galat Password!");
+                    }
+                } else {
+                    alert("Account nahi mila. Register karein!");
+                }
+            } catch (error) {
+                alert("Login Error: " + error.message);
+            }
+        };
 
-      if(!phone || !pass) {
-          return alert("Phone number aur Password bhariye");
-      }
+        // --- RESET PASSWORD LOGIC ---
+        window.sendResetOTP = async function() {
+            const phoneInput = document.getElementById('reset-phone').value;
+            if(!phoneInput) return alert("Number dalein");
+            const phone = "+91" + phoneInput;
+            if (!window.recaptchaVerifier) {
+                window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', { 'size': 'invisible' });
+            }
+            try {
+                window.resetConfirmation = await signInWithPhoneNumber(auth, phone, window.recaptchaVerifier);
+                alert("Reset OTP bhej diya gaya hai!");
+            } catch (error) {
+                alert("Error: " + error.message);
+            }
+        };
 
-      try {
-          const dbRef = ref(db);
-          // Database se user ka data check karna
-          const snapshot = await get(child(dbRef, `users/${phone}`));
-
-          if (snapshot.exists()) {
-              const userData = snapshot.val();
-              // Password match check karna
-              if (userData.password === pass) {
-                  alert("Welcome back, " + userData.username + "!");
-                  // Yahan aap agla screen dikha sakte hain
-              } else {
-                  alert("Galat Password!");
-              }
-          } else {
-              alert("Ye number registered nahi hai. Pehle register karein.");
-          }
-      } catch (error) {
-          console.error(error);
-          alert("Login Error: " + error.message);
-      }
-  };
-          </script>
+        window.handleResetPassword = async function() {
+            const phone = document.getElementById('reset-phone').value;
+            const newPass = document.getElementById('reset-new-password').value;
+            const otp = document.getElementById('reset-otp').value;
+            if(!window.resetConfirmation) return alert("Pehle OTP mangwayein");
+            try {
+                await window.resetConfirmation.confirm(otp);
+                const userRef = ref(db, 'users/' + phone);
+                const snapshot = await get(userRef);
+                if(snapshot.exists()){
+                    await set(ref(db, 'users/' + phone + '/password'), newPass);
+                    alert("Password change ho gaya!");
+                    showScreen('login-screen');
+                } else {
+                    alert("User nahi mila!");
+                }
+            } catch (error) {
+                alert("Error: " + error.message);
+            }
+        };
+    </script>
 </body>
 </html>
