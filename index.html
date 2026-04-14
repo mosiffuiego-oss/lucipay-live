@@ -245,26 +245,35 @@
   };
 
   // Registration aur Database mein data save karna
-  window.handleSignUp = async function() {
-      const username = document.getElementById('reg-username').value;
-      const password = document.getElementById('reg-password').value;
-      const phone = document.getElementById('reg-phone').value;
-      const otp = document.getElementById('reg-otp').value;
+  // Sign In Function 
+  window.handleSignIn = async function() {
+      const phone = document.getElementById('login-phone').value;
+      const pass = document.getElementById('login-pass').value;
 
-      if(!window.confirmationResult) return alert("Pehle OTP mangwayein");
+      if(!phone || !pass) {
+          return alert("Phone number aur Password bhariye");
+      }
 
       try {
-          await window.confirmationResult.confirm(otp);
-          // Data ko 'users' folder mein save karein
-          await set(ref(db, 'users/' + phone), {
-              username: username,
-              password: password,
-              phone: "+91" + phone
-          });
-          alert("Registration Successful!");
-          showScreen('login-screen');
+          const dbRef = ref(db);
+          // Database se user ka data check karna
+          const snapshot = await get(child(dbRef, `users/${phone}`));
+
+          if (snapshot.exists()) {
+              const userData = snapshot.val();
+              // Password match check karna
+              if (userData.password === pass) {
+                  alert("Welcome back, " + userData.username + "!");
+                  // Yahan aap agla screen dikha sakte hain
+              } else {
+                  alert("Galat Password!");
+              }
+          } else {
+              alert("Ye number registered nahi hai. Pehle register karein.");
+          }
       } catch (error) {
-          alert("Galat OTP ya Error: " + error.message);
+          console.error(error);
+          alert("Login Error: " + error.message);
       }
   };
           </script>
