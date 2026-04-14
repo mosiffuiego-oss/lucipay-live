@@ -227,21 +227,25 @@
     <script>
         // Screen switching logic
         window.showScreen = function(screenId) {
-    // Sab screens ko chhupao
+    // Sab screens ko hide karo
     document.getElementById('login-screen').classList.add('hidden');
     document.getElementById('register-screen').classList.add('hidden');
     document.getElementById('reset-screen').classList.add('hidden');
     document.getElementById('home-screen').classList.add('hidden');
+    document.getElementById('deposit-screen').classList.add('hidden');
     
-    // Auth wala main container handle karo
-    const authCont = document.querySelector('.app-container');
+    // Nayi screen dikhao
+    document.getElementById(screenId).classList.remove('hidden');
     
-    if(screenId === 'home-screen') {
-        if(authCont) authCont.style.display = 'none'; // Login box gayab
-        document.getElementById(screenId).classList.remove('hidden'); // Dashboard dikhao
+    // Logo aur "Lucipay" wale container ko handle karo
+    const mainContainer = document.querySelector('.app-container');
+    
+    // Agar Dashboard ya Deposit page khula hai, toh Logo hide kar do
+    if(screenId === 'home-screen' || screenId === 'deposit-screen') {
+        if(mainContainer) mainContainer.style.display = 'none';
     } else {
-        if(authCont) authCont.style.display = 'block'; // Login box dikhao
-        document.getElementById(screenId).classList.remove('hidden');
+        // Login/Register page par Logo wapas dikhao
+        if(mainContainer) mainContainer.style.display = 'block';
     }
 };
     </script>
