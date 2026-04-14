@@ -207,9 +207,8 @@
         import { getAuth, RecaptchaVerifier, signInWithPhoneNumber } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
         import { getDatabase, ref, set, get, child } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-        // Aapka updated Firebase Config
         const firebaseConfig = {
-            apiKey: "AIzaSyDz3fgsgoS103gEs_T8-NK9Ej4o-v4", 
+            apiKey: "AIzaSyDz3fgsgoS103gEs_T8-NK9Ej4o-v4E7F-o", 
             authDomain: "lucipay-4f05c.firebaseapp.com",
             databaseURL: "https://lucipay-4f05c-default-rtdb.firebaseio.com",
             projectId: "lucipay-4f05c",
@@ -223,10 +222,9 @@
         const auth = getAuth(app);
         const db = getDatabase(app);
 
-        // --- OTP Bhejne ka Function ---
         window.sendOTP = async function() {
             const phoneInput = document.getElementById('reg-phone').value;
-            if(!phoneInput || phoneInput.length < 10) return alert("Sahi 10-digit number dalein");
+            if(!phoneInput || phoneInput.length < 10) return alert("10-digit number dalein");
             
             const phone = "+91" + phoneInput;
             if (!window.recaptchaVerifier) {
@@ -242,7 +240,6 @@
             }
         };
 
-        // --- Sign Up (Realtime DB mein Data Save) ---
         window.handleSignUp = async function() {
             const username = document.getElementById('reg-username').value;
             const password = document.getElementById('reg-password').value;
@@ -253,7 +250,6 @@
 
             try {
                 await window.confirmationResult.confirm(otp);
-                // Database mein users folder ke andar phone number ke naam se data save hoga
                 await set(ref(db, 'users/' + phone), {
                     username: username,
                     password: password,
@@ -262,31 +258,25 @@
                 alert("Registration Successful!");
                 showScreen('login-screen');
             } catch (error) {
-                alert("Galat OTP! Phir se try karein.");
+                alert("Galat OTP!");
             }
         };
 
-        // --- Sign In (Realtime DB se Login Check) ---
         window.handleSignIn = async function() {
             const phone = document.getElementById('login-phone').value;
             const pass = document.getElementById('login-pass').value;
-            if(!phone || !pass) return alert("Number aur Password dono bhariye");
+            if(!phone || !pass) return alert("Details bhariye");
             
             try {
                 const dbRef = ref(db);
                 const snapshot = await get(child(dbRef, `users/${phone}`));
-                if (snapshot.exists()) {
-                    if (snapshot.val().password === pass) {
-                        alert("Welcome " + snapshot.val().username);
-                        // Yahan dashboard ka link daal sakte hain
-                    } else {
-                        alert("Galat Password!");
-                    }
+                if (snapshot.exists() && snapshot.val().password === pass) {
+                    alert("Welcome " + snapshot.val().username);
                 } else {
-                    alert("User nahi mila! Pehle register karein.");
+                    alert("Galat details!");
                 }
-            } catch (e) {
-                alert("Login Error: Connection check karein");
-            }
+            } catch (e) { alert("Login Error"); }
         };
     </script>
+</body>
+</html>
