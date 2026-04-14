@@ -203,80 +203,69 @@
     </script>
 
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getAuth, RecaptchaVerifier, signInWithPhoneNumber } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getDatabase, ref, set, get, child } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+  // Firebase SDKs ko CDN se import karein
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getAuth, RecaptchaVerifier, signInWithPhoneNumber } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+  import { getDatabase, ref, set, get, child } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyDz3fgsgoS103gEs_T8-NK9Ej4o-v4E7F-o", 
-            authDomain: "lucipay-4f05c.firebaseapp.com",
-            databaseURL: "https://lucipay-4f05c-default-rtdb.firebaseio.com",
-            projectId: "lucipay-4f05c",
-            storageBucket: "lucipay-4f05c.firebasestorage.app",
-            messagingSenderId: "44541075910",
-            appId: "1:44541075910:web:2ebd7502815ce3db",
-            measurementId: "G-X5JX8EG9HD"
-        };
+  // Aapka naya configuration
+  const firebaseConfig = {
+    apiKey: "AIzaSyDz3fgsgoS1O3gEs_T8-NK9Ej4o-hkxvEo",
+    authDomain: "lucipay-4f05c.firebaseapp.com",
+    databaseURL: "https://lucipay-4f05c-default-rtdb.firebaseio.com",
+    projectId: "lucipay-4f05c",
+    storageBucket: "lucipay-4f05c.firebasestorage.app",
+    messagingSenderId: "44541075910",
+    appId: "1:44541075910:web:2ebd7502815ce3dba952c7",
+    measurementId: "G-X5JX8EG9HD"
+  };
 
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getDatabase(app);
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getDatabase(app);
 
-        window.sendOTP = async function() {
-            const phoneInput = document.getElementById('reg-phone').value;
-            if(!phoneInput || phoneInput.length < 10) return alert("10-digit number dalein");
-            
-            const phone = "+91" + phoneInput;
-            if (!window.recaptchaVerifier) {
-                window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', { 'size': 'invisible' });
-            }
+  // OTP Bhejne ka function
+  window.sendOTP = async function() {
+      const phoneInput = document.getElementById('reg-phone').value;
+      if(!phoneInput || phoneInput.length < 10) return alert("Sahi number dalein");
+      
+      const phone = "+91" + phoneInput;
+      // reCAPTCHA setup
+      if (!window.recaptchaVerifier) {
+          window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', { 'size': 'invisible' });
+      }
 
-            try {
-                const confirmationResult = await signInWithPhoneNumber(auth, phone, window.recaptchaVerifier);
-                window.confirmationResult = confirmationResult;
-                alert("OTP bhej diya gaya hai!");
-            } catch (error) {
-                alert("OTP Error: " + error.message);
-            }
-        };
+      try {
+          const confirmationResult = await signInWithPhoneNumber(auth, phone, window.recaptchaVerifier);
+          window.confirmationResult = confirmationResult;
+          alert("OTP bhej diya gaya hai!");
+      } catch (error) {
+          alert("OTP Error: " + error.message);
+      }
+  };
 
-        window.handleSignUp = async function() {
-            const username = document.getElementById('reg-username').value;
-            const password = document.getElementById('reg-password').value;
-            const phone = document.getElementById('reg-phone').value;
-            const otp = document.getElementById('reg-otp').value;
+  // Registration aur Database mein data save karna
+  window.handleSignUp = async function() {
+      const username = document.getElementById('reg-username').value;
+      const password = document.getElementById('reg-password').value;
+      const phone = document.getElementById('reg-phone').value;
+      const otp = document.getElementById('reg-otp').value;
 
-            if(!window.confirmationResult) return alert("Pehle OTP mangwayein");
+      if(!window.confirmationResult) return alert("Pehle OTP mangwayein");
 
-            try {
-                await window.confirmationResult.confirm(otp);
-                await set(ref(db, 'users/' + phone), {
-                    username: username,
-                    password: password,
-                    phone: "+91" + phone
-                });
-                alert("Registration Successful!");
-                showScreen('login-screen');
-            } catch (error) {
-                alert("Galat OTP!");
-            }
-        };
-
-        window.handleSignIn = async function() {
-            const phone = document.getElementById('login-phone').value;
-            const pass = document.getElementById('login-pass').value;
-            if(!phone || !pass) return alert("Details bhariye");
-            
-            try {
-                const dbRef = ref(db);
-                const snapshot = await get(child(dbRef, `users/${phone}`));
-                if (snapshot.exists() && snapshot.val().password === pass) {
-                    alert("Welcome " + snapshot.val().username);
-                } else {
-                    alert("Galat details!");
-                }
-            } catch (e) { alert("Login Error"); }
-        };
-    </script>
-</body>
-</html>
+      try {
+          await window.confirmationResult.confirm(otp);
+          // Data ko 'users' folder mein save karein
+          await set(ref(db, 'users/' + phone), {
+              username: username,
+              password: password,
+              phone: "+91" + phone
+          });
+          alert("Registration Successful!");
+          showScreen('login-screen');
+      } catch (error) {
+          alert("Galat OTP ya Error: " + error.message);
+      }
+  };
+          </script>
