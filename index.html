@@ -186,16 +186,62 @@
         </div>
     </div>
 
+    <div id="home-screen" class="hidden" style="background: #0d0d0d; color: #fff; position: fixed; top: 0; left: 0; width: 100%; height: 100%; overflow-y: auto; text-align: left; padding: 20px 15px; box-sizing: border-box; z-index: 999;">
+        <div style="display: flex; align-items: center; justify-content: space-between;">
+            <div style="display: flex; align-items: center;">
+                <div style="width: 45px; height: 45px; background: #222; border-radius: 50%; display: flex; justify-content: center; align-items: center; margin-right: 12px;">👤</div>
+                <div>
+                    <div id="user-display-name" style="font-size: 16px; font-weight: bold;">User</div>
+                    <div style="font-size: 11px; color: #888;">ID: <span id="user-display-uid">LP0000</span></div>
+                </div>
+            </div>
+            <span>🔔</span>
+        </div>
+
+        <div style="background: linear-gradient(135deg, #d32f2f, #b71c1c); border-radius: 20px; padding: 25px; margin: 20px 0; box-shadow: 0 4px 15px rgba(211, 47, 47, 0.4);">
+            <div style="font-size: 14px; opacity: 0.8;">Available Balance</div>
+            <div style="font-size: 32px; font-weight: bold; margin-top: 5px;">₹ <span id="user-display-balance">200.00</span></div>
+            <button style="background: rgba(255,255,255,0.2); border: none; color: #fff; padding: 5px 15px; border-radius: 15px; margin-top: 15px; font-size: 12px;">Detail</button>
+        </div>
+
+        <div style="display: flex; justify-content: space-around; margin-top: 20px; text-align: center; color: #bbb;">
+            <div>📥<br><small>Deposit</small></div>
+            <div>📋<br><small>Task</small></div>
+            <div>👥<br><small>Team</small></div>
+            <div>📝<br><small>Order</small></div>
+        </div>
+
+        <div style="position: fixed; bottom: 0; left: 0; width: 100%; background: #000; display: flex; justify-content: space-around; align-items: center; height: 70px; border-top: 1px solid #222;">
+            <div style="text-align: center; color: #d32f2f;">🏠<br><small style="font-size: 9px;">Home</small></div>
+            <div style="text-align: center; color: #666;">💳<br><small style="font-size: 9px;">Payment</small></div>
+            <div style="background: #d4af37; width: 60px; height: 60px; border-radius: 50%; display: flex; justify-content: center; align-items: center; margin-top: -35px; border: 5px solid #000;">💰</div>
+            <div style="text-align: center; color: #666;">📊<br><small style="font-size: 9px;">Stats</small></div>
+            <div style="text-align: center; color: #666;">👤<br><small style="font-size: 9px;">My</small></div>
+        </div>
+    </div>
+    
     <div id="recaptcha-container"></div>
 
     <script>
         // Screen switching logic
-        function showScreen(screenId) {
-            document.getElementById('login-screen').classList.add('hidden');
-            document.getElementById('register-screen').classList.add('hidden');
-            document.getElementById('reset-screen').classList.add('hidden');
-            document.getElementById(screenId).classList.remove('hidden');
-        }
+        window.showScreen = function(screenId) {
+    // Sab screens ko chhupao
+    document.getElementById('login-screen').classList.add('hidden');
+    document.getElementById('register-screen').classList.add('hidden');
+    document.getElementById('reset-screen').classList.add('hidden');
+    document.getElementById('home-screen').classList.add('hidden');
+    
+    // Auth wala main container handle karo
+    const authCont = document.querySelector('.app-container');
+    
+    if(screenId === 'home-screen') {
+        if(authCont) authCont.style.display = 'none'; // Login box gayab
+        document.getElementById(screenId).classList.remove('hidden'); // Dashboard dikhao
+    } else {
+        if(authCont) authCont.style.display = 'block'; // Login box dikhao
+        document.getElementById(screenId).classList.remove('hidden');
+    }
+};
     </script>
 
     <script type="module">
@@ -234,49 +280,63 @@
         };
 
         window.handleSignUp = async function() {
-            const username = document.getElementById('reg-username').value;
-            const password = document.getElementById('reg-password').value;
-            const phone = document.getElementById('reg-phone').value;
-            const otp = document.getElementById('reg-otp').value;
-            if(!window.confirmationResult) return alert("Pehle OTP mangwayein");
-            try {
-                await window.confirmationResult.confirm(otp);
-                await set(ref(db, 'users/' + phone), {
-                    username: username,
-                    password: password,
-                    phone: "+91" + phone,
-                    balance: 0,
-                    uid: "LP" + Math.floor(1000 + Math.random() * 9000)
-                });
-                alert("Registration Successful!");
-                showScreen('login-screen');
-            } catch (error) {
-                alert("Error: " + error.message);
-            }
-        };
+    const phone = document.getElementById('reg-phone').value;
+    const otp = document.getElementById('reg-otp').value;
+    const username = document.getElementById('reg-username').value;
+    const password = document.getElementById('reg-password').value;
+
+    if(!window.confirmationResult) return alert("Pehle OTP mangwayein");
+
+    try {
+        await window.confirmationResult.confirm(otp);
+        await set(ref(db, 'users/' + phone), {
+            username: username,
+            password: password,
+            phone: "+91" + phone,
+            balance: 200, // <-- Ye naya add hua hai
+            uid: "LP" + Math.floor(10000 + Math.random() * 90000)
+        });
+        alert("Registration Successful!");
+        showScreen('login-screen');
+    } catch (error) {
+        alert("Error: " + error.message);
+    }
+};
 
         // --- SIGN IN LOGIC ---
         window.handleSignIn = async function() {
-            const phone = document.getElementById('login-phone').value;
-            const pass = document.getElementById('login-pass').value;
-            if(!phone || !pass) return alert("Details bhariye!");
-            try {
-                const snapshot = await get(child(ref(db), `users/${phone}`));
-                if (snapshot.exists()) {
-                    const userData = snapshot.val();
-                    if (userData.password === pass) {
-                        alert("Welcome back, " + userData.username + "!");
-                        // Dashboard screen yahan add kar sakte ho
-                    } else {
-                        alert("Galat Password!");
-                    }
-                } else {
-                    alert("Account nahi mila. Register karein!");
-                }
-            } catch (error) {
-                alert("Login Error: " + error.message);
+    const phoneInput = document.getElementById('login-phone').value;
+    const pass = document.getElementById('login-pass').value;
+
+    if(!phoneInput || !pass) return alert("Details bhariye!");
+    
+    // Agar user ne +91 nahi lagaya hai toh add karo taaki DB se match ho
+    let phone = phoneInput.startsWith("+91") ? phoneInput : "+91" + phoneInput;
+
+    try {
+        const snapshot = await get(child(ref(db), `users/${phoneInput}`)); // Ya phir aapke database path ke hisaab se
+        if (snapshot.exists()) {
+            const userData = snapshot.val();
+            if (userData.password === pass) {
+                // Dashboard par data bhejna
+                document.getElementById('user-display-name').innerText = userData.username || "User";
+                document.getElementById('user-display-uid').innerText = userData.uid || "LP0000";
+                
+                // Balance load karna
+                let userBal = (userData.balance !== undefined) ? userData.balance : 200;
+                document.getElementById('user-display-balance').innerText = userBal + ".00";
+
+                showScreen('home-screen');
+            } else {
+                alert("Galat Password!");
             }
-        };
+        } else {
+            alert("Account nahi mila. Register karein!");
+        }
+    } catch (error) {
+        alert("Login Error: " + error.message);
+    }
+};
 
         // --- RESET PASSWORD LOGIC ---
         window.sendResetOTP = async function() {
