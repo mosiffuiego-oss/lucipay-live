@@ -207,6 +207,24 @@
             <span>🔔</span>
         </div>
 
+        <div id="stats-screen" class="hidden" style="background:#f7f7f7; min-height:100vh; padding:15px; padding-bottom:100px; position: fixed; top: 0; left: 0; width: 100%; z-index: 998; overflow-y: auto;">
+    <h2 style="text-align:center; color:#d32f2f; margin-top: 20px;">Statistics</h2>
+    <div class="stats-container">
+        <div class="stats-header">Statistics <span style="font-size:10px; color:#aaa;">(15/04/2026)</span></div>
+        <div class="stats-grid">
+            <div class="stat-card"><i class="fas fa-wallet" style="color:#4a90e2;"></i><span class="stat-label">Balance</span><span class="stat-value">₹ 153.52</span></div>
+            <div class="stat-card"><i class="fas fa-chart-line" style="color:#f39c12;"></i><span class="stat-label">Sell</span><span class="stat-value">₹ 0.00</span></div>
+        </div>
+        <div class="stats-header">Payment</div>
+        <div class="exchange-banner"><span>Exchange Rate (INR/USDT)</span><span>105</span></div>
+        <div class="stats-grid">
+            <div class="stat-card"><span class="stat-label">Commission Rate</span><span class="stat-value">4.00 %</span></div>
+            <div class="stat-card"><span class="stat-label">Estimated Income</span><span class="stat-value">₹ 0.00</span></div>
+        </div>
+        <button id="sell-btn" class="btn-sell" onclick="toggleSelling()">Start Selling</button>
+    </div>
+        </div>
+        
         <div id="deposit-screen" class="hidden" style="background-color: #ffffff; min-height: 100vh; color: #000; padding: 20px; font-family: sans-serif; position: fixed; top: 0; left: 0; width: 100%; z-index: 1000; box-sizing: border-box;">
         <div style="display: flex; align-items: center; margin-bottom: 30px;">
             <span onclick="showScreen('home-screen')" style="font-size: 24px; cursor: pointer; color: #d32f2f;">←</span>
@@ -422,7 +440,22 @@
             if(!amount || amount <= 0) return alert("Amount bhariye!");
             alert("Deposit Request Sent: ₹" + (amount * 105));
         };
-        
+        window.toggleSelling = function() {
+    const btn = document.getElementById('sell-btn');
+    if(btn.innerText === "Start Selling") {
+        btn.innerText = "Close Selling";
+        btn.style.background = "#000"; // Close hone par black
+        alert("Selling Started!");
+    } else {
+        btn.innerText = "Start Selling";
+        btn.style.background = "#d32f2f"; // Wapas red
+        alert("Selling Stopped!");
+    }
+};
+
+// Statistics button click karne par screen dikhane ke liye
+// Apne navigation bar mein Statistics wale div par ye onclick laga dena:
+// onclick="showScreen('stats-screen')"
     </script>
 </body>
 </html>
