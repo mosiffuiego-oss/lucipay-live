@@ -279,30 +279,31 @@
     <script>
         // Screen switching logic
    window.showScreen = function(screenId) {
-    // Sabhi possible screens ki list
-    const allScreens = ['login-screen', 'register-screen', 'reset-screen', 'home-screen', 'deposit-screen', 'stats-screen'];
+   window.showScreen = function(screenId) {
+    // 1. Pehle saari screens ko select karo aur chhupao
+    const screens = ['login-screen', 'register-screen', 'reset-screen', 'home-screen', 'deposit-screen', 'stats-screen'];
     
-    // Pehle sabko chhupao
-    allScreens.forEach(id => {
-        const screen = document.getElementById(id);
-        if(screen) screen.classList.add('hidden');
+    screens.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+            el.classList.add('hidden'); // hidden class lagao
+            el.style.display = 'none';  // Double safety ke liye display none
+        }
     });
 
-    // Auth container (logo wala box) handle karo
-    const authCont = document.querySelector('.app-container');
-    
-    if(screenId === 'home-screen' || screenId === 'stats-screen') {
-        if(authCont) authCont.style.display = 'none'; // Dashboard par box gayab
+    // 2. Auth container handle karo (LP logo wala box)
+    const authBox = document.querySelector('.app-container');
+    if (screenId === 'home-screen' || screenId === 'stats-screen' || screenId === 'deposit-screen') {
+        if (authBox) authBox.style.setProperty('display', 'none', 'important');
     } else {
-        if(authCont) authCont.style.display = 'block'; // Login/Register par box dikhao
+        if (authBox) authBox.style.setProperty('display', 'block', 'important');
     }
 
-    // Ab jo screen mangi hai, sirf use dikhao
+    // 3. Ab jo screen dikhani hai usse show karo
     const target = document.getElementById(screenId);
-    if(target) {
+    if (target) {
         target.classList.remove('hidden');
-    } else {
-        console.error("Screen ID nahi mili: " + screenId);
+        target.style.display = 'block';
     }
 };
     </script>
