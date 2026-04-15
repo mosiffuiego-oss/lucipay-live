@@ -331,16 +331,7 @@
 };
 
         // --- SIGN IN LOGIC ---
-        window.handleSignIn = async function() {
-    const phoneInput = document.getElementById('login-phone').value;
-    const pass = document.getElementById('login-pass').value;
-
-    if(!phoneInput || !pass) return alert("Details bhariye!");
-    
-    // Agar user ne +91 nahi lagaya hai toh add karo taaki DB se match ho
-    let phone = phoneInput.startsWith("+91") ? phoneInput : "+91" + phoneInput;
-
-    try {
+        
         window.handleSignIn = async function() {
             const phoneInput = document.getElementById('login-phone').value;
             const pass = document.getElementById('login-pass').value;
