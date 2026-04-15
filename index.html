@@ -293,14 +293,14 @@
         // --- SIGN UP LOGIC ---
         window.sendOTP = async function() {
             const phoneInput = document.getElementById('reg-phone').value;
-            if(!phoneInput || phoneInput.length < 10) return alert("Sahi number dalein");
+            if(!phoneInput || phoneInput.length < 10) return alert("regiested number");
             const phone = "+91" + phoneInput;
             if (!window.recaptchaVerifier) {
                 window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', { 'size': 'invisible' });
             }
             try {
                 window.confirmationResult = await signInWithPhoneNumber(auth, phone, window.recaptchaVerifier);
-                alert("OTP bhej diya gaya hai!");
+                alert("OTP was send sucessfully!");
             } catch (error) {
                 alert("OTP Error: " + error.message);
             }
@@ -312,7 +312,7 @@
     const username = document.getElementById('reg-username').value;
     const password = document.getElementById('reg-password').value;
 
-    if(!window.confirmationResult) return alert("Pehle OTP mangwayein");
+    if(!window.confirmationResult) return alert("otp need first");
 
     try {
         await window.confirmationResult.confirm(otp);
@@ -320,7 +320,7 @@
             username: username,
             password: password,
             phone: "+91" + phone,
-            balance: 200, // <-- Ye naya add hua hai
+            balance: 200, 
             uid: "LP" + Math.floor(10000 + Math.random() * 90000)
         });
         alert("Registration Successful!");
@@ -333,7 +333,7 @@
         // --- SIGN IN LOGIC ---
           window.handleSignIn = async function() {
             const phoneInput = document.getElementById('login-phone').value;
-            const pass = document.getElementById('login-pass').value;
+            const pass = document.getElementById('login-password').value;
 
             if(!phoneInput || !pass) return alert("Details bhariye!");
             
@@ -357,7 +357,7 @@
                         alert("Galat Password!");
                     }
                 } else {
-                    alert("Account nahi mila. Register karein!");
+                    alert("Account not found register first!");
                 }
             } catch (error) {
                 alert("Login Error: " + error.message);
@@ -367,14 +367,14 @@
         // --- RESET PASSWORD LOGIC ---
         window.sendResetOTP = async function() {
             const phoneInput = document.getElementById('reset-phone').value;
-            if(!phoneInput) return alert("Number dalein");
+            if(!phoneInput) return alert("add number");
             const phone = "+91" + phoneInput;
             if (!window.recaptchaVerifier) {
                 window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', { 'size': 'invisible' });
             }
             try {
                 window.resetConfirmation = await signInWithPhoneNumber(auth, phone, window.recaptchaVerifier);
-                alert("Reset OTP bhej diya gaya hai!");
+                alert("Reset otp successfuly sended!");
             } catch (error) {
                 alert("Error: " + error.message);
             }
@@ -384,14 +384,14 @@
             const phone = document.getElementById('reset-phone').value;
             const newPass = document.getElementById('reset-new-password').value;
             const otp = document.getElementById('reset-otp').value;
-            if(!window.resetConfirmation) return alert("Pehle OTP mangwayein");
+            if(!window.resetConfirmation) return alert("Need otp first");
             try {
                 await window.resetConfirmation.confirm(otp);
                 const userRef = ref(db, 'users/' + phone);
                 const snapshot = await get(userRef);
                 if(snapshot.exists()){
                     await set(ref(db, 'users/' + phone + '/password'), newPass);
-                    alert("Password change ho gaya!");
+                    alert("Your password was changwd !");
                     showScreen('login-screen');
                 } else {
                     alert("User nahi mila!");
