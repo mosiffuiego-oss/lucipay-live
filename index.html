@@ -278,22 +278,31 @@
 
     <script>
         // Screen switching logic
-        window.showScreen = function(screenId) {
-    // Sab screens ko chhupao
-    document.getElementById('login-screen').classList.add('hidden');
-    document.getElementById('register-screen').classList.add('hidden');
-    document.getElementById('reset-screen').classList.add('hidden');
-    document.getElementById('home-screen').classList.add('hidden');
+   window.showScreen = function(screenId) {
+    // Sabhi possible screens ki list
+    const allScreens = ['login-screen', 'register-screen', 'reset-screen', 'home-screen', 'deposit-screen', 'stats-screen'];
     
-    // Auth wala main container handle karo
+    // Pehle sabko chhupao
+    allScreens.forEach(id => {
+        const screen = document.getElementById(id);
+        if(screen) screen.classList.add('hidden');
+    });
+
+    // Auth container (logo wala box) handle karo
     const authCont = document.querySelector('.app-container');
     
-    if(screenId === 'home-screen') {
-        if(authCont) authCont.style.display = 'none'; // Login box gayab
-        document.getElementById(screenId).classList.remove('hidden'); // Dashboard dikhao
+    if(screenId === 'home-screen' || screenId === 'stats-screen') {
+        if(authCont) authCont.style.display = 'none'; // Dashboard par box gayab
     } else {
-        if(authCont) authCont.style.display = 'block'; // Login box dikhao
-        document.getElementById(screenId).classList.remove('hidden');
+        if(authCont) authCont.style.display = 'block'; // Login/Register par box dikhao
+    }
+
+    // Ab jo screen mangi hai, sirf use dikhao
+    const target = document.getElementById(screenId);
+    if(target) {
+        target.classList.remove('hidden');
+    } else {
+        console.error("Screen ID nahi mili: " + screenId);
     }
 };
     </script>
