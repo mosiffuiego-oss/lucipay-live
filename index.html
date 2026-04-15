@@ -354,7 +354,7 @@
 
                         showScreen('home-screen');
                     } else {
-                        alert("Galat Password!");
+                        alert("Wrong Password!");
                     }
                 } else {
                     alert("Account not found register first!");
@@ -391,7 +391,7 @@
                 const snapshot = await get(userRef);
                 if(snapshot.exists()){
                     await set(ref(db, 'users/' + phone + '/password'), newPass);
-                    alert("Your password was changwd !");
+                    alert("Your password was changed !");
                     showScreen('login-screen');
                 } else {
                     alert("User nahi mila!");
