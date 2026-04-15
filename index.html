@@ -331,23 +331,21 @@
 };
 
         // --- SIGN IN LOGIC ---
-        
-        window.handleSignIn = async function() {
+          window.handleSignIn = async function() {
             const phoneInput = document.getElementById('login-phone').value;
             const pass = document.getElementById('login-pass').value;
 
             if(!phoneInput || !pass) return alert("Details bhariye!");
             
-            // Number format fix
-            let phone = phoneInput.startsWith("+91") ? phoneInput : "+91" + phoneInput;
+            // Registration ke time bina +91 ke save ho raha hai, 
+            // isliye yahan bhi clean number use karenge
+            const cleanPhone = phoneInput.replace("+91", "").trim();
 
             try {
-                // Yahan backticks (`) use karna zaroori hai
-                const snapshot = await get(ref(db, `users/${phoneInput}`)); 
+                const snapshot = await get(ref(db, 'users/' + cleanPhone)); 
                 if (snapshot.exists()) {
                     const userData = snapshot.val();
                     if (userData.password === pass) {
-                        // Dashboard data update
                         document.getElementById('user-display-name').innerText = userData.username || "User";
                         document.getElementById('user-display-uid').innerText = userData.uid || "LP0000";
                         
